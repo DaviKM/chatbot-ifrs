@@ -1,0 +1,7 @@
+# API
+uvicorn
+fastapi
+dotenv
+
+#RAG
+langchain-google-genai
