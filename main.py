@@ -1,9 +1,7 @@
-from util.llm import googleLLM
+from util.qdrantServer import vectorStore
 
-llm = googleLLM()
-
-while True:
-    pergunta = input('Pergunta: ')
-    if pergunta == '':
-        break
-    print(llm.invoke(pergunta))
+try:
+    vector_store = vectorStore()
+    print('Vetor criado com sucesso!')
+except Exception as e:
+    print(e)
