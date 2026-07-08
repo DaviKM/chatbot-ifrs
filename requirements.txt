@@ -4,4 +4,6 @@ fastapi
 dotenv
 
 #RAG
+qdrant-client
 langchain-google-genai
+langchain-qdrant
