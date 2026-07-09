@@ -7,3 +7,5 @@ dotenv
 qdrant-client
 langchain-google-genai
 langchain-qdrant
+langchain-community
+pypdf

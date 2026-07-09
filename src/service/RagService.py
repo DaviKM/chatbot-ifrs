@@ -1,8 +1,12 @@
 import util.qdrantServer as QS
+from langchain_community.document_loaders import PyPDFLoader
 
-try:
-    server = QS.getServerModel('teste5')
+server = QS.getServerModel('teste')
+
+# Função para treinar IA com PDF
+def treinarArquivo(arquivo):
     vector = QS.vectorStore(server)
-    print('Criado com sucesso!')
-except Exception as e:
-    print('Erro:' + str(e))
+
+    loader = PyPDFLoader(f"./{arquivo}")
+    docs = loader.load()
+
