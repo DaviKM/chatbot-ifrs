@@ -5,19 +5,29 @@ import util.llm as llm
 
 client = QdrantClient('http://localhost:6333')
 
-def vectorStore(nome = 'teste'):
+
+def getServerModel(collection = 'teste'):
     embedding = llm.googleEmbedding()
-    size = len(embedding.embed_query(nome))
-    if not client.collection_exists(nome):
+    size = len(embedding.embed_query(collection))
+    if not client.collection_exists(collection):
         client.create_collection(
-            collection_name=nome,
+            collection_name=collection,
             vectors_config=VectorParams(
-            size=size,
-            distance=Distance.COSINE
+                size=size,
+                distance=Distance.COSINE
             )
         )
+    return {
+        "client": client,
+        "collection": collection,
+        "embedding": embedding,
+        "chunkModel": {'size': 500, 'overlap': 200}
+    }
+
+
+def vectorStore(serverModel):
     return QdrantVectorStore(
-        client=client,
-        collection_name=nome,
-        embedding=llm.googleEmbeddings()
+        client=serverModel['client'],
+        collection_name=serverModel['collection'],
+        embedding=serverModel['embedding']
     )
