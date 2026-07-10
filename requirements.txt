@@ -4,8 +4,9 @@ fastapi
 dotenv
 
 #RAG
+pypdf
 qdrant-client
+langchain-core
 langchain-google-genai
 langchain-qdrant
-langchain-community
-pypdf
+langchain_text_splitters
