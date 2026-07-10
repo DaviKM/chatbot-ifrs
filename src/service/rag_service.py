@@ -68,5 +68,3 @@ def getChunks(texto, size=1000, overlap=200):
     chunks = document_splitter.split_documents(texto)
 
     return chunks
-
-print(query("O que você sabe sobre a seleção Brasileira?"))
