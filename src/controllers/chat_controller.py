@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Body
 from src.service.rag_service import query
-from src.models.chat import Chat
 
 router = APIRouter(prefix="/query", tags=["Query", "Search", "Chat"])
 

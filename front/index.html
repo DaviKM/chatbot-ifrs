@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="pergunta" placeholder="Digite sua pergunta...">
+    <button type="button" onclick="fazerPergunta()" >Enviar</button>
+    <script>
+        async function fazerPergunta()
+        {
+            const pergunta = {"pergunta": document.getElementById('pergunta').value}
+            const response = await fetch('http://localhost:6060/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ pergunta })
+            });
+            const resposta = await response.json();
+            alert(resposta.resposta);
+        }
+    </script>
+</body>
+</html>
