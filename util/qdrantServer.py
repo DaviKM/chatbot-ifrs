@@ -31,3 +31,11 @@ def vectorStore(serverModel):
         collection_name=serverModel['collection'],
         embedding=serverModel['embedding']
     )
+
+def getRetriever(serverModel):
+    vector_store = vectorStore(serverModel)
+    retriever = vector_store.as_retriever(
+        search_type='similarity_score_threshold',
+        search_kwargs={'score_threshold': 0.5}
+    )
+    return retriever

@@ -1,6 +1,7 @@
 import util.qdrantServer as QS
 from langchain_core.documents import Document
 from pypdf import PdfReader
+from langchain_core.messages import HumanMessage, SystemMessage
 
 server = QS.getServerModel('teste')
 
@@ -34,6 +35,32 @@ def treinarArquivo(arquivo: str):
         print(e)
 
 
+def query(text : str):
+    retriever = QS.getRetriever(server)
+    docs = retriever.invoke(text)
+    context = " ".join(doc.page_content for doc in docs)
+    return generation(text, context)
+
+
+def generation(hm, context):
+    from util.llm import googleLLM
+    sm = (
+        "Você é um assistente para tarefas de resposta a perguntas. "
+        "Use as seguintes partes do contexto recuperado para responder a pergunta. "
+        "Se você não sabe a resposta ou o contexto não foi passado, diga que "
+        "o documento não fala sobre isso. Use no máximo três frases e mantenha a "
+        "resposta concisa.\n\n{contexto}"
+    ).format(contexto=context)
+
+    messages = [
+        SystemMessage(content=sm),
+        HumanMessage(content=hm)
+    ]
+
+    response = googleLLM().invoke(messages)
+    return response
+
+
 def getChunks(texto, size=1000, overlap=200):
     from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -41,3 +68,5 @@ def getChunks(texto, size=1000, overlap=200):
     chunks = document_splitter.split_documents(texto)
 
     return chunks
+
+print(query("O que você sabe sobre a seleção Brasileira?"))
