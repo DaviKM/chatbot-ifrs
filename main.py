@@ -1,4 +1,4 @@
-from util.qdrantServer import vectorStore
+from util.qdrant_server import vectorStore
 
 try:
     vector_store = vectorStore()
