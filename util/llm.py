@@ -10,3 +10,7 @@ def googleLLM():
 
 def googleEmbedding(model = 'gemini-embedding-001'):
     return GoogleGenerativeAIEmbeddings(model=model)
+
+def llmEmbedding(model = 'gemini'):
+    if model == 'gemini':
+        return googleEmbedding()

@@ -5,12 +5,10 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 server = QS.getServerModel('teste')
 
-
 # Função para treinar IA com PDF
 def treinarArquivo(arquivo: str):
     try:
         vector = QS.vectorStore(server)
-
         with open(arquivo, 'rb') as pdf:
             reader = PdfReader(pdf)
             docs = []
@@ -26,13 +24,12 @@ def treinarArquivo(arquivo: str):
                     }
                 )
                 docs.append(doc)
-        if not docs:
-            print('Documento vazio!')
-            return
-        vector.add_documents(documents=getChunks(docs, server['chunkModel']['size'], server['chunkModel']['overlap']))
+            chunks = getChunks(docs, server['chunkModel']['size'], server['chunkModel']['overlap'])
+            vector.add_documents(chunks)
         print('Arquivo enviado para treinamento!')
     except Exception as e:
         print(e)
+
 
 
 def query(text : str):
@@ -68,3 +65,7 @@ def getChunks(texto, size=1000, overlap=200):
     chunks = document_splitter.split_documents(texto)
 
     return chunks
+
+# Só pra testes
+if __name__ == '__main__':
+    treinarArquivo('edital.pdf')

@@ -8,17 +8,13 @@ def create_app():
 
     app = FastAPI()
 
-    """origins = [
-        "http://localhost:6060"
-    ]
-
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,  # Allows specified origins
-        allow_credentials=True,  # Allows cookies/auth headers
-        allow_methods=["*"],  # Automatically responds to OPTIONS with allowed methods
-        allow_headers=["*"],  # Allows all custom headers
-    ) """
+        allow_origins=["*"],  # ou ["*"] para liberar geral (cuidado em produção)
+        allow_credentials=True,
+        allow_methods=["*"],  # ou especificar: ["GET", "POST", "OPTIONS"]
+        allow_headers=["*"],
+    )
 
     app.include_router(rag_router)
     app.include_router(chat_router)

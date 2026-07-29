@@ -6,9 +6,7 @@ import util.llm as llm
 client = QdrantClient('http://localhost:6333')
 
 
-def getServerModel(collection = 'teste'):
-    embedding = llm.googleEmbedding()
-    size = len(embedding.embed_query(collection))
+def getServerModel(collection = 'teste', model = 'gemini', size = 3072):
     if not client.collection_exists(collection):
         client.create_collection(
             collection_name=collection,
@@ -20,8 +18,8 @@ def getServerModel(collection = 'teste'):
     return {
         "client": client,
         "collection": collection,
-        "embedding": embedding,
-        "chunkModel": {'size': 500, 'overlap': 200}
+        "model": model,
+        "chunkModel": _defineChunks(model)
     }
 
 
@@ -29,13 +27,21 @@ def vectorStore(serverModel):
     return QdrantVectorStore(
         client=serverModel['client'],
         collection_name=serverModel['collection'],
-        embedding=serverModel['embedding']
+        embedding=llm.llmEmbedding(serverModel['model'])
     )
 
 def getRetriever(serverModel):
     vector_store = vectorStore(serverModel)
     retriever = vector_store.as_retriever(
         search_type='similarity_score_threshold',
-        search_kwargs={'score_threshold': 0.5}
+        search_kwargs={'score_threshold': 0.8}
     )
     return retriever
+
+def _defineChunks(model):
+    base = {
+        'gpt' : { 'size': 1000, 'overlap': 200},
+        'gemini' : { 'size': 1000, 'overlap': 200}
+    }
+
+    return base[model]
