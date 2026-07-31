@@ -1,0 +1,84 @@
+# Controle de versão
+.git
+.gitignore
+.gitattributes
+
+# Ambientes virtuais
+venv/
+.venv/
+env/
+ENV/
+virtualenv/
+
+# Cache e bytecode Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribuição / empacotamento
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Variáveis de ambiente e secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Testes e cobertura
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Logs
+*.log
+logs/
+
+# Arquivos de IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentação / arquivos não essenciais para build
+*.md
+LICENSE
+docs/
+
+# Docker
+Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.circleci/
+
+# Dados locais / volumes (ajuste conforme seu projeto)
+data/
+*.sqlite3
+*.db
+
+# Node (caso tenha frontend junto)
+node_modules/

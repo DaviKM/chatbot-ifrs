@@ -1,9 +1,13 @@
-from util.llm import googleLLM
+import uvicorn
+from src import create_app
+app = create_app()
 
-llm = googleLLM()
+@app.get('/')
+def index():
+    return {'Hello': 'World'}
 
-while True:
-    pergunta = input('Pergunta: ')
-    if pergunta == '':
-        break
-    print(llm.invoke(pergunta))
+if __name__ == "__main__":
+    uvicorn.run("main:app",
+                host="0.0.0.0",
+                port=6060,
+                reload=True)
