@@ -6,7 +6,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 server = QS.getServerModel('teste')
 
 # Função para treinar IA com PDF
-def treinarArquivo(arquivo: str):
+def treinarArquivo(arquivo: str, nomeArquivo: str):
     try:
         vector = QS.vectorStore(server)
         with open(arquivo, 'rb') as pdf:
@@ -18,17 +18,17 @@ def treinarArquivo(arquivo: str):
                     continue
                 doc = Document(
                     page_content=text,
-                    metadata={
-                        "source": arquivo,
+                        metadata={
+                        "source": nomeArquivo,
                         "page": page_num
                     }
                 )
                 docs.append(doc)
             chunks = getChunks(docs, server['chunkModel']['size'], server['chunkModel']['overlap'])
             vector.add_documents(chunks)
-        print('Arquivo enviado para treinamento!')
+        return 'Arquivo enviado para treinamento!'
     except Exception as e:
-        print(e)
+        return e
 
 
 
@@ -67,5 +67,5 @@ def getChunks(texto, size=1000, overlap=200):
     return chunks
 
 # Só pra testes
-if __name__ == '__main__':
-    treinarArquivo('edital.pdf')
+#if __name__ == '__main__':
+  #  treinarArquivo('edital.pdf')

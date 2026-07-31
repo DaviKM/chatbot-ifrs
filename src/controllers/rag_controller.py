@@ -5,14 +5,15 @@ import os
 router = APIRouter(prefix='/treinar', tags=['Treinar', 'IA', 'PDF'])
 
 @router.post('')
-async def treinarArquivo(arquivo: UploadFile = File()):
+async def treinar(arquivo: UploadFile = File()):
     try:
-        path = os.path.join("src", "controllers", "uploads", arquivo.filename)
+        path = os.path.join("uploaded", arquivo.filename)
         with open(path, 'wb') as f:
-            arquivo = await arquivo.read()
-            f.write(arquivo)
-        return 'Upload your file'
+            file = await arquivo.read()
+            f.write(file)
+        response = treinarArquivo(path, arquivo.filename)
+        print(response)
+        return response
     except Exception as e:
-        return e
-    response = treinarArquivo(path)
-    return response
+        print(e)
+        return {"Erro": e}
