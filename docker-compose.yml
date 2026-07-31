@@ -36,6 +36,18 @@ services:
     networks:
       - app-network
 
+  frontend:
+    image: httpd:2.4
+    container_name: apache-frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./front:/usr/local/apache2/htdocs/
+    restart: unless-stopped
+    networks:
+      - app-network
+
+
 volumes:
   qdrant_data:
 
