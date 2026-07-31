@@ -22,4 +22,4 @@ COPY . .
 EXPOSE 6060
 
 # Comando padrão para rodar a aplicação (ajuste conforme necessário)
-CMD ["python", "main.py"]
+CMD ["python","main.py"]
