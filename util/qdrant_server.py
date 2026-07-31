@@ -1,9 +1,16 @@
+import os
+
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 from langchain_qdrant import QdrantVectorStore
 import util.llm as llm
+from dotenv import load_dotenv
 
-client = QdrantClient('http://localhost:6333')
+load_dotenv()
+
+QDRANT_HOST = os.getenv('QDRANT_HOST', 'localhost')
+QDRANT_PORT = int(os.getenv('QDRANT_PORT', '6333'))
+client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 
 
 def getServerModel(collection = 'teste', model = 'gemini', size = 3072):
