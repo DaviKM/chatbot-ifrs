@@ -8,9 +8,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-QDRANT_HOST = os.getenv('QDRANT_HOST', 'localhost')
-QDRANT_PORT = int(os.getenv('QDRANT_PORT', '6333'))
-client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
+QDRANT_URL = os.getenv('QDRANT_URL', 'http://localhost:6333')
+client = QdrantClient(url=QDRANT_URL)
 
 
 def getServerModel(collection = 'teste', model = 'gemini', size = 3072):
