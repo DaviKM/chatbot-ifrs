@@ -1,4 +1,5 @@
 import util.qdrant_server as QS
+from util.log import writeLog
 from langchain_core.documents import Document
 from pypdf import PdfReader
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -26,9 +27,13 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
                 docs.append(doc)
             chunks = getChunks(docs, server['chunkModel']['size'], server['chunkModel']['overlap'])
             vector.add_documents(chunks)
+        writeLog('RAG', 'INFO', 'Arquivo enviado para treinamento com sucesso', {
+            "arquivo": nomeArquivo,
+            "paginas": len(reader.pages)
+        })
         return 'Arquivo enviado para treinamento!'
     except Exception as e:
-        return e
+        return str(e)
 
 
 
@@ -36,7 +41,12 @@ def query(text : str):
     retriever = QS.getRetriever(server)
     docs = retriever.invoke(text)
     context = " ".join(doc.page_content for doc in docs)
-    return generation(text, context)
+    response = generation(text, context)
+    writeLog('queries','INFO', 'Pergunta realizada', {
+        "pergunta": text,
+        "resposta": response
+    })
+    return response
 
 
 def generation(hm, context):

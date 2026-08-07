@@ -15,3 +15,4 @@ langchain_text_splitters
 #Logs
 logging
 python-json-logger
+tzdata

@@ -9,8 +9,8 @@ async def treinar(arquivo: UploadFile = File()):
     try:
         path = os.path.join("uploaded", arquivo.filename)
         with open(path, 'wb') as f:
-            file = await arquivo.read()
-            f.write(file)
+            content = await arquivo.read()
+            f.write(content)
         response = treinarArquivo(path, arquivo.filename)
         print(response)
         return response
