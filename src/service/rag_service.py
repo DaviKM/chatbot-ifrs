@@ -6,6 +6,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 server = QS.getServerModel('teste')
 
+
 # Função para treinar IA com PDF
 def treinarArquivo(arquivo: str, nomeArquivo: str):
     try:
@@ -19,7 +20,7 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
                     continue
                 doc = Document(
                     page_content=text,
-                        metadata={
+                    metadata={
                         "source": nomeArquivo,
                         "page": page_num
                     }
@@ -33,16 +34,23 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
         })
         return 'Arquivo enviado para treinamento!'
     except Exception as e:
-        return str(e)
+        writeLog('RAG', 'ERROR', 'Ocorreu um erro ao tentar enviar o arquivo', {
+            "arquivo": arquivo,
+            "paginas": len(reader.pages),
+            "erro": {
+                'tipo': type(e).__name__,
+                'mensagem': str(e),
+            }
+        })
+        return str('Ocorreu um erro ao tentar enviar o arquivo')
 
 
-
-def query(text : str):
+def query(text: str):
     retriever = QS.getRetriever(server)
     docs = retriever.invoke(text)
     context = " ".join(doc.page_content for doc in docs)
     response = generation(text, context)
-    writeLog('queries','INFO', 'Pergunta realizada', {
+    writeLog('queries', 'INFO', 'Pergunta realizada', {
         "pergunta": text,
         "resposta": response
     })
@@ -77,5 +85,5 @@ def getChunks(texto, size=1000, overlap=200):
     return chunks
 
 # Só pra testes
-#if __name__ == '__main__':
-  #  treinarArquivo('edital.pdf')
+# if __name__ == '__main__':
+#  treinarArquivo('edital.pdf')

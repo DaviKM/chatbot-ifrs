@@ -50,5 +50,4 @@ def writeLog(nome : str,nivel: str, mensagem : str, fields: dict = None):
     except Exception as e:
         print(e)
         return str(e)
-
 #ragLog('critical  ', "teste 1")
