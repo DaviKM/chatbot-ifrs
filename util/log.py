@@ -2,7 +2,10 @@ from datetime import datetime
 import logging
 from pythonjsonlogger import json
 import os
+import time
 
+os.environ['TZ'] = 'America/Sao_Paulo'
+time.tzset()
 
 def getLogger(loggerName : str) -> logging.Logger:
     logger = logging.getLogger(loggerName)
@@ -23,9 +26,9 @@ def getLogger(loggerName : str) -> logging.Logger:
 
     return logger
 
-def ragLog(nivel: str, mensagem : str, fields: dict = None):
+def writeLog(nome : str,nivel: str, mensagem : str, fields: dict = None):
     try:
-        logger = getLogger("RAG")
+        logger = getLogger(nome)
         nivel = nivel.strip().upper()
         extra = {
             "extra": fields
