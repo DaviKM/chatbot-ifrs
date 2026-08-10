@@ -14,6 +14,7 @@
     <input type="file" id="arquivo">
     <button type="button" onclick="enviarArquivo()" >Enviar</button>
     <br>
+    <input type="text" id="toDelete" placeholder="Digite o seu arquivo para deletar...">
     <button type="button" onclick="deletarArquivo()">Apagar</button>
     <script>
         async function fazerPergunta()
@@ -43,7 +44,7 @@
         }
 
         async function deletarArquivo() {
-            const arquivo = {'nome_arquivo': 'EDITAL-No-12-2026-EDITAL-DO-PROCESSO-SELETIVO-DE-VAGAS-NAO-PREENCHIDAS-2026-2.pdf'}
+            const arquivo = {'nome_arquivo': document.getElementById('toDelete').value}
             const response = await fetch('http://localhost:6060/rag/deletar', {
                 method: 'POST',
                 headers: {
