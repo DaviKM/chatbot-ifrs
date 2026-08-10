@@ -12,7 +12,9 @@
     <button type="button" onclick="fazerPergunta()" >Enviar</button>
     <br>
     <input type="file" id="arquivo">
-    <button type="button" onclick="enviarArquivo()" >Enviar</button> 
+    <button type="button" onclick="enviarArquivo()" >Enviar</button>
+    <br>
+    <button type="button" onclick="deletarArquivo()">Apagar</button>
     <script>
         async function fazerPergunta()
         {
@@ -31,13 +33,26 @@
             const formData = new FormData()
             const arquivo = document.getElementById('arquivo').files[0]
             formData.append('arquivo', arquivo)
-            const response = await fetch('http://localhost:6060/treinar', {
+            const response = await fetch('http://localhost:6060/rag/treinar', {
                 method: 'POST',
                 body: formData
             })
             const resposta = await response.json()
             alert(resposta)
 
+        }
+
+        async function deletarArquivo() {
+            const arquivo = {'nome_arquivo': 'EDITAL-No-12-2026-EDITAL-DO-PROCESSO-SELETIVO-DE-VAGAS-NAO-PREENCHIDAS-2026-2.pdf'}
+            const response = await fetch('http://localhost:6060/rag/deletar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(arquivo)
+            })
+            const resposta = await response.json()
+            alert(resposta)
         }
     </script>
 </body>

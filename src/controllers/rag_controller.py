@@ -1,10 +1,10 @@
-from fastapi import APIRouter, UploadFile, File
-from src.service.rag_service import treinarArquivo
+from fastapi import APIRouter, UploadFile, File, Body
+from src.service.rag_service import treinarArquivo, delete
 import os
 
-router = APIRouter(prefix='/treinar', tags=['Treinar', 'IA', 'PDF'])
+router = APIRouter(prefix='/rag', tags=['Treinar', 'IA', 'PDF'])
 
-@router.post('')
+@router.post('/treinar')
 async def treinar(arquivo: UploadFile = File()):
     try:
         path = os.path.join("uploaded", arquivo.filename)
@@ -17,3 +17,13 @@ async def treinar(arquivo: UploadFile = File()):
     except Exception as e:
         print(e)
         return {"Erro": e}
+
+@router.post('/deletar')
+def deletar(nome_arquivo: str = Body(embed=True)):
+    try:
+        path = os.path.join("uploaded", nome_arquivo)
+        delete(path, nome_arquivo)
+        return "Deletado com sucesso!"
+    except Exception as e:
+        print(e)
+        return {"Erro": str(e)}
