@@ -12,7 +12,7 @@ QDRANT_URL = os.getenv('QDRANT_URL', 'http://localhost:6333')
 client = QdrantClient(url=QDRANT_URL)
 
 
-def getServerModel(collection = 'teste', model = 'gemini', size = 3072):
+def getServerModel(collection = 'teste', model = 'gemini', embeddingModel = 'ollama', size = 3072):
     if not client.collection_exists(collection):
         client.create_collection(
             collection_name=collection,
@@ -25,6 +25,7 @@ def getServerModel(collection = 'teste', model = 'gemini', size = 3072):
         "client": client,
         "collection": collection,
         "model": model,
+        "embeddingModel": embeddingModel,
         "chunkModel": _defineChunks(model)
     }
 
@@ -33,7 +34,7 @@ def vectorStore(serverModel):
     return QdrantVectorStore(
         client=serverModel['client'],
         collection_name=serverModel['collection'],
-        embedding=llm.llmEmbedding(serverModel['model'])
+        embedding=llm.llmEmbedding(serverModel['embeddingModel'])
     )
 
 def getRetriever(serverModel):

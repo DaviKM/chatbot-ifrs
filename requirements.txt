@@ -9,6 +9,7 @@ pypdf
 qdrant-client
 langchain-core
 langchain-google-genai
+langchain-ollama
 langchain-qdrant
 langchain_text_splitters
 
