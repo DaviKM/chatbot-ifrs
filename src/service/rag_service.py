@@ -1,9 +1,14 @@
+import os.path
+
+from qdrant_client.http.models import FilterSelector, Filter, FieldCondition, MatchValue
 import util.qdrant_server as QS
+from util.log import writeLog
 from langchain_core.documents import Document
 from pypdf import PdfReader
 from langchain_core.messages import HumanMessage, SystemMessage
 
-server = QS.getServerModel('teste')
+server = QS.getServerModel('ifrs')
+
 
 # Função para treinar IA com PDF
 def treinarArquivo(arquivo: str, nomeArquivo: str):
@@ -18,7 +23,7 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
                     continue
                 doc = Document(
                     page_content=text,
-                        metadata={
+                    metadata={
                         "source": nomeArquivo,
                         "page": page_num
                     }
@@ -26,17 +31,33 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
                 docs.append(doc)
             chunks = getChunks(docs, server['chunkModel']['size'], server['chunkModel']['overlap'])
             vector.add_documents(chunks)
+        writeLog('RAG', 'INFO', 'Arquivo enviado para treinamento com sucesso', {
+            "arquivo": nomeArquivo,
+            "paginas": len(reader.pages)
+        })
         return 'Arquivo enviado para treinamento!'
     except Exception as e:
-        return e
+        writeLog('RAG', 'ERROR', 'Ocorreu um erro ao tentar enviar o arquivo', {
+            "arquivo": arquivo,
+            "paginas": len(reader.pages),
+            "erro": {
+                'tipo': type(e).__name__,
+                'mensagem': str(e),
+            }
+        })
+        return str('Ocorreu um erro ao tentar enviar o arquivo')
 
 
-
-def query(text : str):
+def query(text: str):
     retriever = QS.getRetriever(server)
     docs = retriever.invoke(text)
     context = " ".join(doc.page_content for doc in docs)
-    return generation(text, context)
+    response = generation(text, context)
+    writeLog('queries', 'INFO', 'Pergunta realizada', {
+        "pergunta": text,
+        "resposta": response
+    })
+    return response
 
 
 def generation(hm, context):
@@ -66,6 +87,41 @@ def getChunks(texto, size=1000, overlap=200):
 
     return chunks
 
+def delete(caminho : str, nome : str):
+    try:
+        client = server['client']
+        colecao = server['collection']
+        client.delete(
+            collection_name=colecao,
+            points_selector=FilterSelector(
+                filter=Filter(
+                    must=[
+                        FieldCondition(
+                            key='metadata.source',
+                            match=MatchValue(value=nome)
+                        )
+                    ]
+                )
+            )
+        )
+        if os.path.exists(caminho):
+            os.remove(caminho)
+        else:
+            print('O arquivo não existe')
+        writeLog('RAG', 'INFO', 'Arquivo deletado', {
+            "arquivo": nome,
+        })
+        return 'Deletado com sucesso'
+    except Exception as e:
+        print(str(e))
+        writeLog('RAG', 'ERROR', 'Falha ao deletar arquivo', {
+            "arquivo": nome,
+            "erro": {
+                'tipo': type(e).__name__,
+                'mensagem': str(e),
+            }
+        })
+        return e
 # Só pra testes
-#if __name__ == '__main__':
-  #  treinarArquivo('edital.pdf')
+if __name__ == '__main__':
+  delete('../../uploaded/EDITAL-No-12-2026-EDITAL-DO-PROCESSO-SELETIVO-DE-VAGAS-NAO-PREENCHIDAS-2026-2.pdf', 'EDITAL-No-12-2026-EDITAL-DO-PROCESSO-SELETIVO-DE-VAGAS-NAO-PREENCHIDAS-2026-2.pdf')

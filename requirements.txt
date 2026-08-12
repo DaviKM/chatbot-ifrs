@@ -11,3 +11,8 @@ langchain-core
 langchain-google-genai
 langchain-qdrant
 langchain_text_splitters
+
+#Logs
+logging
+python-json-logger
+tzdata

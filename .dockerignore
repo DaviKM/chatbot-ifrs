@@ -82,3 +82,8 @@ data/
 
 # Node (caso tenha frontend junto)
 node_modules/
+
+logs/*
+!logs/.gitkeep
+uploaded/*
+!uploaded/.gitkeep

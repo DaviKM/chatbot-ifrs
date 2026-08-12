@@ -15,3 +15,6 @@ venv.bak/
 
 uploaded/*
 !uploaded/.gitkeep
+
+logs/*
+!logs/.gitkeep
