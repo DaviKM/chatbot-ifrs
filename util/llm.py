@@ -13,7 +13,7 @@ def googleEmbedding(model = 'gemini-embedding-001'):
     return GoogleGenerativeAIEmbeddings(model=model)
 
 def ollamaEmbedding():
-    return OllamaEmbeddings(model="embeddinggemma")
+    return OllamaEmbeddings(model="nomic-embed-text")
 
 def llmEmbedding(model = 'gemini'):
     if model == 'gemini':

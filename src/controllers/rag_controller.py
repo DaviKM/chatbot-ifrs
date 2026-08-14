@@ -26,4 +26,4 @@ def deletar(nome_arquivo: str = Body(embed=True)):
         return "Deletado com sucesso!"
     except Exception as e:
         print(e)
-        return {"Erro": str(e)}
+        return {"Erro": e}

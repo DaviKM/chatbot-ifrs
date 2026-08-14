@@ -12,10 +12,10 @@ server = QS.getServerModel('ifrs')
 
 # Função para treinar IA com PDF
 def treinarArquivo(arquivo: str, nomeArquivo: str):
-    try:
-        vector = QS.vectorStore(server)
-        with open(arquivo, 'rb') as pdf:
-            reader = PdfReader(pdf)
+    with open(arquivo, 'rb') as pdf:
+        reader = PdfReader(pdf)
+        try:
+            vector = QS.vectorStore(server)
             docs = []
             for page_num, page in enumerate(reader.pages, start=1):
                 text = page.extract_text()
@@ -31,21 +31,21 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
                 docs.append(doc)
             chunks = getChunks(docs, server['chunkModel']['size'], server['chunkModel']['overlap'])
             vector.add_documents(chunks)
-        writeLog('RAG', 'INFO', 'Arquivo enviado para treinamento com sucesso', {
-            "arquivo": nomeArquivo,
-            "paginas": len(reader.pages)
-        })
-        return 'Arquivo enviado para treinamento!'
-    except Exception as e:
-        writeLog('RAG', 'ERROR', 'Ocorreu um erro ao tentar enviar o arquivo', {
-            "arquivo": arquivo,
-            "paginas": len(reader.pages),
-            "erro": {
-                'tipo': type(e).__name__,
-                'mensagem': str(e),
-            }
-        })
-        return str('Ocorreu um erro ao tentar enviar o arquivo')
+            writeLog('RAG', 'INFO', 'Arquivo enviado para treinamento com sucesso', {
+                "arquivo": nomeArquivo,
+                "paginas": len(reader.pages)
+            })
+            return 'Arquivo enviado para treinamento!'
+        except Exception as e:
+            writeLog('RAG', 'ERROR', 'Ocorreu um erro ao tentar enviar o arquivo', {
+                "arquivo": arquivo,
+                "paginas": len(reader.pages),
+                "erro": {
+                    'tipo': type(e).__name__,
+                    'mensagem': str(e),
+                }
+            })
+            return str('Ocorreu um erro ao tentar enviar o arquivo')
 
 
 def query(text: str):
