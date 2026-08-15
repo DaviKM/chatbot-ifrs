@@ -12,7 +12,7 @@ QDRANT_URL = os.getenv('QDRANT_URL', 'http://localhost:6333')
 client = QdrantClient(url=QDRANT_URL)
 
 
-def getServerModel(collection = 'teste', model = 'gemini', embeddingModel = 'ollama', size = 3072):
+def getServerModel(collection = 'teste', model = 'gemini', embeddingModel = 'ollama', size = 1024):
     if not client.collection_exists(collection):
         client.create_collection(
             collection_name=collection,
