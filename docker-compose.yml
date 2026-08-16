@@ -1,15 +1,15 @@
 services:
-  ollama:
-    image: ollama/ollama:rocm
-    container_name: ollama
-    environment:
-      - HSA_OVERRIDE_GFX_VERSION=11.0.0
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    networks:
-      - app-network
+#  ollama:
+#    image: ollama/ollama:rocm
+#    container_name: ollama
+#    environment:
+#      - HSA_OVERRIDE_GFX_VERSION=11.0.0
+#    ports:
+#      - "11434:11434"
+#    volumes:
+#      - ollama_data:/root/.ollama
+#    networks:
+#      - app-network
   app:
     build: .
     container_name: python-app
@@ -18,10 +18,13 @@ services:
     env_file:
       - .env
     environment:
-      - QDRANT_URL=http://qdrant:6333
-      - OLLAMA_URL=http://ollama:11434
+      - QDRANT_URL=${QDRANT_URL}
+      - OLLAMA_URL=${OLLAMA_URL}
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       qdrant:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     volumes:
       - .:/app
@@ -47,6 +50,27 @@ services:
     networks:
       - app-network
 
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: meubanco
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - app-network
+
   frontend:
     image: httpd:2.4
     container_name: apache-frontend
@@ -63,6 +87,7 @@ services:
 volumes:
   qdrant_data:
   ollama_data:
+  postgres_data:
 
 networks:
   app-network:
