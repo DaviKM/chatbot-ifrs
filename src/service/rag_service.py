@@ -9,7 +9,6 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 server = QS.getServerModel('ifrs')
 
-
 # Função para treinar IA com PDF
 def treinarArquivo(arquivo: str, nomeArquivo: str):
     with open(arquivo, 'rb') as pdf:

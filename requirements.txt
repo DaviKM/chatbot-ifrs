@@ -17,3 +17,7 @@ langchain_text_splitters
 logging
 python-json-logger
 tzdata
+
+#PostgreSQL
+sqlalchemy
+psycopg2-binary

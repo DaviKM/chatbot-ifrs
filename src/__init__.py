@@ -5,6 +5,10 @@ def create_app():
     from fastapi.middleware.cors import CORSMiddleware
     from src.controllers.rag_controller import router as rag_router
     from src.controllers.chat_controller import router as chat_router
+    from database.db import Base, engine
+    import database.model
+
+    Base.metadata.create_all(engine)
 
     app = FastAPI()
 
