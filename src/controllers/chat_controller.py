@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Body
 from src.service.rag_service import query
+from database.db import Session
+from database.model import Mensagem
 
 router = APIRouter(prefix="/query", tags=["Query", "Search", "Chat"])
 
@@ -15,4 +17,8 @@ def ask(pergunta : str = Body(embed=True)):
         dict: Um dicionário contendo a resposta gerada.
     """
     resposta = query(pergunta)
+    with Session() as session:
+        mensagem = Mensagem(tel_n='51995361677', question=pergunta, answer=resposta)
+        session.add(mensagem)
+        session.commit()
     return {"resposta": resposta}
