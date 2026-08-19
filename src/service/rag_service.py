@@ -47,11 +47,12 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
             return str('Ocorreu um erro ao tentar enviar o arquivo')
 
 
-def query(text: str):
+def query(text: str, tel):
     retriever = QS.getRetriever(server)
     docs = retriever.invoke(text)
     context = " ".join(doc.page_content for doc in docs)
-    response = generation(text, context)
+    historico = getHistorico(tel)
+    response = generation(text, context, historico)
     writeLog('queries', 'INFO', 'Pergunta realizada', {
         "pergunta": text,
         "resposta": response
@@ -59,16 +60,16 @@ def query(text: str):
     return response
 
 
-def generation(hm, context):
+def generation(hm, context, historico):
     from util.llm import googleLLM
     sm = (
         "Você é um assistente para tarefas de resposta a perguntas. "
         "Use as seguintes partes do contexto recuperado para responder a pergunta. "
         "Se você não sabe a resposta ou o contexto não foi passado, diga que "
         "o documento não fala sobre isso. Use no máximo três frases e mantenha a "
-        "resposta concisa.\n\n{contexto}"
-    ).format(contexto=context)
-
+        "resposta concisa.\n\nHistórico de conversa: {historico}\n\nContexto: {contexto}"
+    ).format(historico=historico, contexto=context)
+    print(sm)
     messages = [
         SystemMessage(content=sm),
         HumanMessage(content=hm)
@@ -77,6 +78,18 @@ def generation(hm, context):
     response = googleLLM().invoke(messages)
     return response
 
+def getHistorico(tel):
+    from sqlalchemy import select
+    from database.db import Session
+    from database.model import Mensagem
+
+    with Session() as session:
+        stmt = select(Mensagem.question, Mensagem.answer, Mensagem.date).where(Mensagem.tel_n == tel).order_by(Mensagem.date.asc())
+        response = session.execute(stmt).all()
+        historico = []
+        for row in response:
+            historico.append(f"Data: {row.date} \nPergunta: {row.question}\nResposta: {row.answer}")
+        return historico
 
 def getChunks(texto, size=1000, overlap=200):
     from langchain_text_splitters import RecursiveCharacterTextSplitter

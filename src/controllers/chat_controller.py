@@ -16,7 +16,7 @@ def ask(pergunta : str = Body(embed=True)):
     Returns:
         dict: Um dicionário contendo a resposta gerada.
     """
-    resposta = query(pergunta)
+    resposta = query(pergunta, '51995361677')
     with Session() as session:
         mensagem = Mensagem(tel_n='51995361677', question=pergunta, answer=resposta)
         session.add(mensagem)
