@@ -6,6 +6,7 @@ from util.log import writeLog
 from langchain_core.documents import Document
 from pypdf import PdfReader
 from langchain_core.messages import HumanMessage, SystemMessage
+from util.llm import googleLLM
 
 server = QS.getServerModel('ifrs')
 
@@ -48,27 +49,32 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
 
 
 def query(text: str, tel):
-    retriever = QS.getRetriever(server)
-    docs = retriever.invoke(text)
-    context = " ".join(doc.page_content for doc in docs)
     historico = getHistorico(tel)
-    response = generation(text, context, historico)
+    question = googleLLM().invoke(
+        f"Com base no histórico da conversa e na nova pergunta do usuário, gere uma única frase de busca que represente a real intenção dele."
+        f"\n\nHistórico de conversa: {historico}"
+        f"\n\n Nova pergunta: {text}"
+    )
+    retriever = QS.getRetriever(server)
+    docs = retriever.invoke(question)
+    context = " ".join(doc.page_content for doc in docs)
+    response = generation(question, context)
     writeLog('queries', 'INFO', 'Pergunta realizada', {
         "pergunta": text,
         "resposta": response
     })
+    print(f'Pergunta do Usuário: {text}\n\nPergunta da IA: {question}\n\nResposta: {response}')
     return response
 
 
-def generation(hm, context, historico):
-    from util.llm import googleLLM
+def generation(hm, context):
     sm = (
         "Você é um assistente para tarefas de resposta a perguntas. "
         "Use as seguintes partes do contexto recuperado para responder a pergunta. "
         "Se você não sabe a resposta ou o contexto não foi passado, diga que "
         "o documento não fala sobre isso. Use no máximo três frases e mantenha a "
-        "resposta concisa.\n\nHistórico de conversa: {historico}\n\nContexto: {contexto}"
-    ).format(historico=historico, contexto=context)
+        "resposta concisa.\n\nContexto: {contexto}"
+    ).format(contexto=context)
     print(sm)
     messages = [
         SystemMessage(content=sm),
@@ -86,9 +92,9 @@ def getHistorico(tel):
     with Session() as session:
         stmt = select(Mensagem.question, Mensagem.answer, Mensagem.date).where(Mensagem.tel_n == tel).order_by(Mensagem.date.asc())
         response = session.execute(stmt).all()
-        historico = []
+        historico = ""
         for row in response:
-            historico.append(f"Data: {row.date} \nPergunta: {row.question}\nResposta: {row.answer}")
+            historico += f"Data: {row.date} \nPergunta: {row.question}\nResposta: {row.answer}\n\n"
         return historico
 
 def getChunks(texto, size=1000, overlap=200):
