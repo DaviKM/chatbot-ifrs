@@ -1,15 +1,19 @@
 services:
-#  ollama:
-#    image: ollama/ollama:rocm
-#    container_name: ollama
-#    environment:
-#      - HSA_OVERRIDE_GFX_VERSION=11.0.0
-#    ports:
-#      - "11434:11434"
-#    volumes:
-#      - ollama_data:/root/.ollama
-#    networks:
-#      - app-network
+  ollama:
+    image: ollama/ollama:rocm
+    container_name: ollama
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    environment:
+      - HSA_OVERRIDE_GFX_VERSION=11.0.0
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - app-network
+
   app:
     build: .
     container_name: python-app

@@ -8,7 +8,7 @@ from pypdf import PdfReader
 from langchain_core.messages import HumanMessage, SystemMessage
 from util.llm import googleLLM
 
-server = QS.getServerModel('ifrs')
+server = QS.getServerModel(collection='ifrs', embeddingModel='ollama')
 
 # Função para treinar IA com PDF
 def treinarArquivo(arquivo: str, nomeArquivo: str):
