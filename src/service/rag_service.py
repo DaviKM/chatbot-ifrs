@@ -52,13 +52,14 @@ def query(text: str, tel):
     historico = getHistorico(tel)
     question = googleLLM().invoke(
         f"Com base no histórico da conversa e na nova pergunta do usuário, gere uma única frase de busca que represente a real intenção dele."
+        f"Se não houver histórico de conversa, apenas reescreva a pergunta para que a pesquisa fique mais clara"
         f"\n\nHistórico de conversa: {historico}"
         f"\n\n Nova pergunta: {text}"
     )
     retriever = QS.getRetriever(server)
     docs = retriever.invoke(question)
     context = " ".join(doc.page_content for doc in docs)
-    response = generation(question, context)
+    response = generation(text, context)
     writeLog('queries', 'INFO', 'Pergunta realizada', {
         "pergunta": text,
         "resposta": response
