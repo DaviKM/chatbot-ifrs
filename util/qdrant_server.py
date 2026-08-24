@@ -12,12 +12,12 @@ QDRANT_URL = os.getenv('QDRANT_URL', 'http://localhost:6333')
 client = QdrantClient(url=QDRANT_URL)
 
 
-def getServerModel(collection = 'teste', model = 'gemini', embeddingModel = 'gemini', size = 1024):
+def getServerModel(collection = 'teste', model = 'gemini', embeddingModel = 'gemini'):
     if not client.collection_exists(collection):
         client.create_collection(
             collection_name=collection,
             vectors_config=VectorParams(
-                size=size,
+                size=getVectorSize(embeddingModel),
                 distance=Distance.COSINE
             )
         )
@@ -49,6 +49,14 @@ def _defineChunks(model):
     base = {
         'gpt' : { 'size': 1000, 'overlap': 200},
         'gemini' : { 'size': 1000, 'overlap': 200}
+    }
+
+    return base[model]
+
+def getVectorSize(model):
+    base = {
+        'ollama' : 1024,
+        'gemini' : 3072
     }
 
     return base[model]
