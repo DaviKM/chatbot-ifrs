@@ -14,7 +14,7 @@ def googleEmbedding(model = 'gemini-embedding-001'):
     return GoogleGenerativeAIEmbeddings(model=model)
 
 def ollamaEmbedding():
-    return OllamaEmbeddings(model="mxbai-embed-large",
+    return OllamaEmbeddings(model="embeddinggemma",
                             base_url=OLLAMA_URL)
 
 def llmEmbedding(model = 'gemini'):

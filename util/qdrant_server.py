@@ -41,7 +41,7 @@ def getRetriever(serverModel):
     vector_store = vectorStore(serverModel)
     retriever = vector_store.as_retriever(
         search_type='similarity_score_threshold',
-        search_kwargs={'score_threshold': 0.8}
+        search_kwargs={'score_threshold': 0.75}
     )
     return retriever
 
@@ -55,7 +55,7 @@ def _defineChunks(model):
 
 def getVectorSize(model):
     base = {
-        'ollama' : 1024,
+        'ollama' : 768,
         'gemini' : 3072
     }
 

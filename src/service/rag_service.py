@@ -51,8 +51,10 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
 def query(text: str, tel):
     historico = getHistorico(tel)
     question = googleLLM().invoke(
-        f"Com base no histórico da conversa e na nova pergunta do usuário, gere uma única frase de busca que represente a real intenção dele."
-        f"Se não houver histórico de conversa, apenas reescreva a pergunta para que a pesquisa fique mais clara"
+        f"Com base no histórico da conversa e na nova pergunta do usuário, gere uma única frase contendo palavras chaves de busca que represente a real intenção dele."
+        f"O objetivo é procurar por informações em um banco de dados vetorial que contém informações de editais para o processo seletivo de uma instituição."
+        f"Se não houver histórico de conversa ou a nova pergunta não tiver relação com as anteriores, apenas reescreva a pergunta para que a pesquisa fique"
+        f"mais clara, mas sem alterar seu interesse realou incluindo informações que podem alterar o resultado final."
         f"\n\nHistórico de conversa: {historico}"
         f"\n\n Nova pergunta: {text}"
     )
@@ -64,7 +66,7 @@ def query(text: str, tel):
         "pergunta": text,
         "resposta": response
     })
-    print(f'Pergunta do Usuário: {text}\n\nPergunta da IA: {question}\n\nResposta: {response}')
+    print(f'Pergunta do Usuário: {text}\n\nPergunta da IA: {question}\n\nBusca: {context}\n\nResposta: {response}')
     return response
 
 
