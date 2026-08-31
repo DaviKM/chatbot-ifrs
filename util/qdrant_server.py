@@ -48,7 +48,9 @@ def getRetriever(serverModel):
 def _defineChunks(model):
     base = {
         'gpt' : { 'size': 1000, 'overlap': 200},
-        'gemini' : { 'size': 1000, 'overlap': 200}
+        'gemini' : { 'size': 1000, 'overlap': 200},
+        'ollama' : { 'size': 1000, 'overlap': 200}
+    
     }
 
     return base[model]

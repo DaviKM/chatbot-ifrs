@@ -6,9 +6,9 @@ from util.log import writeLog
 from langchain_core.documents import Document
 from pypdf import PdfReader
 from langchain_core.messages import HumanMessage, SystemMessage
-from util.llm import googleLLM
+from util.llm import llm
 
-server = QS.getServerModel(collection='ifrs', embeddingModel='ollama')
+server = QS.getServerModel(collection='ifrs', model='ollama', embeddingModel='ollama')
 
 # Função para treinar IA com PDF
 def treinarArquivo(arquivo: str, nomeArquivo: str):
@@ -50,7 +50,7 @@ def treinarArquivo(arquivo: str, nomeArquivo: str):
 
 def query(text: str, tel):
     historico = getHistorico(tel)
-    question = googleLLM().invoke(
+    question = llm().invoke(
         f"Com base no histórico da conversa e na nova pergunta do usuário, gere uma única frase contendo palavras chaves de busca que represente a real intenção dele."
         f"O objetivo é procurar por informações em um banco de dados vetorial que contém informações de editais para o processo seletivo de uma instituição."
         f"Se não houver histórico de conversa ou a nova pergunta não tiver relação com as anteriores, apenas reescreva a pergunta para que a pesquisa fique"
@@ -58,6 +58,9 @@ def query(text: str, tel):
         f"\n\nHistórico de conversa: {historico}"
         f"\n\n Nova pergunta: {text}"
     )
+    question = question.content if server['model'] == 'ollama' else question
+
+    print(question)
     retriever = QS.getRetriever(server)
     docs = retriever.invoke(question)
     context = " ".join(doc.page_content for doc in docs)
@@ -84,7 +87,8 @@ def generation(hm, context):
         HumanMessage(content=hm)
     ]
 
-    response = googleLLM().invoke(messages)
+    response = llm().invoke(messages)
+    response = response.content if server['model'] == 'ollama' else response
     return response
 
 def getHistorico(tel):
