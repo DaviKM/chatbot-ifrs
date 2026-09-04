@@ -54,7 +54,7 @@ def query(text: str, tel):
         f"Com base no histórico da conversa e na nova pergunta do usuário, gere uma única frase contendo palavras chaves de busca que represente a real intenção dele."
         f"O objetivo é procurar por informações em um banco de dados vetorial que contém informações de editais para o processo seletivo de uma instituição."
         f"Se não houver histórico de conversa ou a nova pergunta não tiver relação com as anteriores, apenas reescreva a pergunta para que a pesquisa fique"
-        f"mais clara, mas sem alterar seu interesse realou incluindo informações que podem alterar o resultado final."
+        f"mais clara, mas sem alterar seu interesse real ou incluindo informações que podem alterar o resultado final."
         f"\n\nHistórico de conversa: {historico}"
         f"\n\n Nova pergunta: {text}"
     )
@@ -78,8 +78,9 @@ def generation(hm, context):
         "Você é um assistente para tarefas de resposta a perguntas. "
         "Use as seguintes partes do contexto recuperado para responder a pergunta. "
         "Se você não sabe a resposta ou o contexto não foi passado, diga que "
-        "o documento não fala sobre isso. Use no máximo três frases e mantenha a "
-        "resposta concisa.\n\nContexto: {contexto}"
+        "'Eu não sei responder essa pergunta, mande um e-mail para coppid@canoas.ifrs.edu.br'"
+        "Ela deve ter no máximo 1000 caracteres e manter a resposta concisa e simples mas completas, ou seja,"
+        "se a pergunta for sobre cotas raciais por exemplo, você deve pelo menos citar todas.\n\nContexto: {contexto}"""
     ).format(contexto=context)
     print(sm)
     messages = [
@@ -91,7 +92,7 @@ def generation(hm, context):
     response = response.content if server['model'] == 'ollama' else response
     return response
 
-def getHistorico(tel):
+def getHistorico(tel) -> str:
     from sqlalchemy import select
     from database.db import Session
     from database.model import Mensagem

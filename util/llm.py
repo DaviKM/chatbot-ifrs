@@ -4,7 +4,7 @@ from langchain_google_genai import GoogleGenerativeAI, GoogleGenerativeAIEmbeddi
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 
 load_dotenv()
-API_KEY = os.getenv("GOOGLE_API_KEY")
+API_KEY = os.getenv("GOOGLE_API_KEY", None)
 OLLAMA_URL = os.getenv('OLLAMA_URL', 'http://localhost:11434')
 
 def googleLLM():
