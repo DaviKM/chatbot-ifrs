@@ -79,7 +79,7 @@ def generation(hm, context):
         "Use as seguintes partes do contexto recuperado para responder a pergunta. "
         "Se você não sabe a resposta ou o contexto não foi passado, diga que "
         "'Eu não sei responder essa pergunta, mande um e-mail para coppid@canoas.ifrs.edu.br'"
-        "Ela deve ter no máximo 1000 caracteres e manter a resposta concisa e simples mas completas, ou seja,"
+        "Ela deve ter no máximo 500 caracteres e manter a resposta concisa e simples mas completas, ou seja,"
         "se a pergunta for sobre cotas raciais por exemplo, você deve pelo menos citar todas.\n\nContexto: {contexto}"""
     ).format(contexto=context)
     print(sm)
