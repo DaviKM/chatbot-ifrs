@@ -54,7 +54,8 @@ def query(text: str, tel):
         f"Com base no histórico da conversa e na nova pergunta do usuário, gere uma única frase contendo palavras chaves de busca que represente a real intenção dele."
         f"O objetivo é procurar por informações em um banco de dados vetorial que contém informações de editais para o processo seletivo de uma instituição."
         f"Se não houver histórico de conversa ou a nova pergunta não tiver relação com as anteriores, apenas reescreva a pergunta para que a pesquisa fique"
-        f"mais clara, mas sem alterar seu interesse real ou incluindo informações que podem alterar o resultado final."
+        f"mais clara, mas sem alterar seu interesse real ou incluindo informações que podem alterar o resultado final. A nova pergunta deve manter o mesmo objetivo"
+        f"de resposta da pergunta original, sem abranger muito outros interesses."
         f"\n\nHistórico de conversa: {historico}"
         f"\n\n Nova pergunta: {text}"
     )
@@ -64,6 +65,7 @@ def query(text: str, tel):
     retriever = QS.getRetriever(server)
     docs = retriever.invoke(question)
     context = " ".join(doc.page_content for doc in docs)
+    #context = f"Histórico de conversa: {historico}\n\nInformações: {" ".join(doc.page_content for doc in docs)}"
     response = generation(text, context)
     writeLog('queries', 'INFO', 'Pergunta realizada', {
         "pergunta": text,
