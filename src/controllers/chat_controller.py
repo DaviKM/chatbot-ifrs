@@ -35,7 +35,7 @@ def get_historico(tel: str):
         tel (str): O número de telefone para o qual o histórico será obtido.
 
     Returns:
-        list: Uma lista de dicionários contendo as perguntas, respostas e datas correspondentes.
+        list: Uma lista de dicionários contendo as perguntas e respostas, em ordem cronológica.
     """
     with Session() as session:
         stmt = select(Mensagem.question, Mensagem.answer).where(Mensagem.tel_n == tel).order_by(Mensagem.date.asc())
