@@ -16,11 +16,25 @@
     <br>
     <input type="text" id="toDelete" placeholder="Digite o seu arquivo para deletar...">
     <button type="button" onclick="deletarArquivo()">Apagar</button>
+    <br>
+    <input type="text" id="telefone" oninput="pegarHistorico()" placeholder="Digite o número de telefone...">
+    <button type="button" onclick="pegarHistorico()">Buscar Histórico</button>
+    <br><br>
+    <div id="chat-box" style="border: 1px solid #ccc; padding: 10px; max-width: 600px; min-height: 300px; overflow-y: auto;">
+        <!-- As mensagens aparecerão aqui -->
+    </div>
     <script>
         async function fazerPergunta()
         {
-            const pergunta = {"pergunta": document.getElementById('pergunta').value}
-            const response = await fetch('http://localhost:6060/query', {
+            const perguntaInput = document.getElementById('pergunta');
+            const perguntaTexto = perguntaInput.value;
+            if (!perguntaTexto) return;
+
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += `<p><strong>Você:</strong> ${perguntaTexto}</p>`;
+
+            const pergunta = {"pergunta": perguntaTexto, "tel": document.getElementById('telefone').value};
+            const response = await fetch('http://localhost:6060/chat/query', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -28,7 +42,10 @@
                 body: JSON.stringify(pergunta)
             });
             const resposta = await response.json();
-            alert(resposta.resposta);
+            
+            chatBox.innerHTML += `<p><strong>Bot:</strong> ${resposta.resposta}</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            perguntaInput.value = '';
         }
         async function enviarArquivo(){
             const formData = new FormData()
@@ -54,6 +71,31 @@
             })
             const resposta = await response.json()
             alert(resposta)
+        }
+
+        async function pegarHistorico() {
+            const tel = document.getElementById('telefone').value;
+            if (!tel) {
+                alert("Por favor, digite um número de telefone.");
+                return;
+            }
+            try {
+                const response = await fetch(`http://localhost:6060/chat/historico/${tel}`);
+                const resposta = await response.json();
+                
+                const chatBox = document.getElementById('chat-box');
+                chatBox.innerHTML = ''; // Limpar o chat atual
+
+                resposta.forEach(msg => {
+                    chatBox.innerHTML += `<p><strong>Você:</strong> ${msg.question}</p>`;
+                    chatBox.innerHTML += `<p><strong>Bot:</strong> ${msg.answer}</p>`;
+                });
+                chatBox.scrollTop = chatBox.scrollHeight;
+                
+            } catch (error) {
+                console.error("Erro ao buscar histórico:", error);
+                alert("Erro ao buscar histórico.");
+            }
         }
     </script>
 </body>
