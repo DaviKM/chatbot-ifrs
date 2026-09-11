@@ -16,8 +16,8 @@ def googleEmbedding(model = 'gemini-embedding-001'):
 def ollamaLLM():
     return ChatOllama(model="gemma4", base_url=OLLAMA_URL)
 
-def ollamaEmbedding():
-    return OllamaEmbeddings(model="embeddinggemma",
+def ollamaEmbedding(model = 'embeddinggemma'):
+    return OllamaEmbeddings(model=model,
                             base_url=OLLAMA_URL)
 
 def llm(model = 'ollama'):
@@ -29,5 +29,5 @@ def llm(model = 'ollama'):
 def llmEmbedding(model = 'gemini'):
     if model == 'gemini':
         return googleEmbedding()
-    if model == 'ollama':
-        return ollamaEmbedding()
+    else:
+        return ollamaEmbedding(model)
