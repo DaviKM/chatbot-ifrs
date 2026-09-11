@@ -5,98 +5,326 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Chatbot IFRS</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e5ddd5; /* Cor de fundo estilo WhatsApp */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: #075e54;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .header .tel-input {
+            display: flex;
+            gap: 10px;
+        }
+        .header input {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            width: 200px;
+        }
+        .header button {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+            background-color: #25d366;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .header button:hover {
+            background-color: #128c7e;
+        }
+        .admin-panel {
+            background: #f0f0f0;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+        .admin-panel input, .admin-panel button {
+            padding: 6px 10px;
+            font-size: 13px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .admin-panel button {
+            background: #fff;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .admin-panel button:hover {
+            background: #e9e9e9;
+        }
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            background-color: #e5ddd5;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* WhatsApp pattern background */
+            background-repeat: repeat;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            line-height: 1.4;
+            position: relative;
+            word-wrap: break-word;
+            font-size: 15px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .message.user {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+        .message.bot {
+            background-color: #fff;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+        }
+        .input-area {
+            display: flex;
+            padding: 15px 20px;
+            background: #f0f0f0;
+            align-items: center;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px;
+            outline: none;
+            font-size: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .input-area button {
+            background-color: #00a884;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-left: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+        .input-area button:hover {
+            background-color: #008f6f;
+        }
+        
+        /* Adicionando um indicador de carregamento (opcional) */
+        .typing {
+            font-size: 12px;
+            color: #888;
+            font-style: italic;
+            display: none;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-    <input type="text" id="pergunta" placeholder="Digite sua pergunta...">
-    <button type="button" onclick="fazerPergunta()" >Enviar</button>
-    <br>
-    <input type="file" id="arquivo">
-    <button type="button" onclick="enviarArquivo()" >Enviar</button>
-    <br>
-    <input type="text" id="toDelete" placeholder="Digite o seu arquivo para deletar...">
-    <button type="button" onclick="deletarArquivo()">Apagar</button>
-    <br>
-    <input type="text" id="telefone" oninput="pegarHistorico()" placeholder="Digite o número de telefone...">
-    <button type="button" onclick="pegarHistorico()">Buscar Histórico</button>
-    <br><br>
-    <div id="chat-box" style="border: 1px solid #ccc; padding: 10px; max-width: 600px; min-height: 300px; overflow-y: auto;">
-        <!-- As mensagens aparecerão aqui -->
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="header">
+            <h2>Chatbot IFRS</h2>
+            <div class="tel-input">
+                <input type="text" id="telefone" oninput="pegarHistorico()" placeholder="Número de telefone...">
+                <button type="button" onclick="pegarHistorico()">Buscar</button>
+            </div>
+        </div>
+
+        <!-- Painel de Administração -->
+        <div class="admin-panel">
+            <strong>Admin:</strong>
+            <input type="file" id="arquivo">
+            <button type="button" onclick="enviarArquivo()">Treinar Arquivo</button>
+            <span style="color: #ccc;">|</span>
+            <input type="text" id="toDelete" placeholder="Nome do arquivo...">
+            <button type="button" onclick="deletarArquivo()">Apagar Arquivo</button>
+        </div>
+
+        <!-- Área do Chat -->
+        <div id="chat-box" class="chat-box">
+            <div class="message bot">Olá! Digite seu telefone acima e envie uma pergunta.</div>
+        </div>
+
+        <!-- Área de Input -->
+        <div class="input-area">
+            <input type="text" id="pergunta" placeholder="Digite sua mensagem..." onkeypress="handleKeyPress(event)">
+            <button type="button" onclick="fazerPergunta()">➤</button>
+        </div>
     </div>
+
     <script>
-        async function fazerPergunta()
-        {
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                fazerPergunta();
+            }
+        }
+
+        async function fazerPergunta() {
             const perguntaInput = document.getElementById('pergunta');
-            const perguntaTexto = perguntaInput.value;
+            const perguntaTexto = perguntaInput.value.trim();
+            const telInput = document.getElementById('telefone').value.trim();
+
             if (!perguntaTexto) return;
+            if (!telInput) {
+                alert("Por favor, digite seu número de telefone no cabeçalho antes de enviar uma mensagem.");
+                return;
+            }
 
             const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML += `<p><strong>Você:</strong> ${perguntaTexto}</p>`;
-
-            const pergunta = {"pergunta": perguntaTexto, "tel": document.getElementById('telefone').value};
-            const response = await fetch('http://localhost:6060/chat/query', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(pergunta)
-            });
-            const resposta = await response.json();
-            
-            chatBox.innerHTML += `<p><strong>Bot:</strong> ${resposta.resposta}</p>`;
+            // Adicionar pergunta do usuário na tela
+            chatBox.innerHTML += `<div class="message user">${perguntaTexto}</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
-            perguntaInput.value = '';
-        }
-        async function enviarArquivo(){
-            const formData = new FormData()
-            const arquivo = document.getElementById('arquivo').files[0]
-            formData.append('arquivo', arquivo)
-            const response = await fetch('http://localhost:6060/rag/treinar', {
-                method: 'POST',
-                body: formData
-            })
-            const resposta = await response.json()
-            alert(resposta)
 
+            const pergunta = {
+                "pergunta": perguntaTexto, 
+                "tel": telInput // Enviar telefone caso o backend passe a utilizar no query
+            };
+
+            // Limpar input
+            perguntaInput.value = '';
+
+            try {
+                const response = await fetch('http://localhost:6060/chat/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(pergunta)
+                });
+                const resposta = await response.json();
+                
+                // Adicionar resposta do bot na tela
+                chatBox.innerHTML += `<div class="message bot">${resposta.resposta}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } catch (error) {
+                console.error("Erro ao fazer pergunta:", error);
+                chatBox.innerHTML += `<div class="message bot" style="color: red;">Erro ao se conectar com o servidor.</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        async function enviarArquivo() {
+            const formData = new FormData();
+            const arquivoInput = document.getElementById('arquivo');
+            if(arquivoInput.files.length === 0){
+                alert("Selecione um arquivo primeiro.");
+                return;
+            }
+            const arquivo = arquivoInput.files[0];
+            formData.append('arquivo', arquivo);
+
+            try {
+                const response = await fetch('http://localhost:6060/rag/treinar', {
+                    method: 'POST',
+                    body: formData
+                });
+                const resposta = await response.json();
+                alert("Resposta: " + resposta);
+            } catch (error) {
+                alert("Erro ao treinar arquivo.");
+            }
         }
 
         async function deletarArquivo() {
-            const arquivo = {'nome_arquivo': document.getElementById('toDelete').value}
-            const response = await fetch('http://localhost:6060/rag/deletar', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(arquivo)
-            })
-            const resposta = await response.json()
-            alert(resposta)
+            const nomeArquivo = document.getElementById('toDelete').value.trim();
+            if(!nomeArquivo) {
+                alert("Digite o nome do arquivo para deletar.");
+                return;
+            }
+            const arquivo = {'nome_arquivo': nomeArquivo};
+
+            try {
+                const response = await fetch('http://localhost:6060/rag/deletar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(arquivo)
+                });
+                const resposta = await response.json();
+                alert("Resposta: " + resposta);
+            } catch (error) {
+                alert("Erro ao deletar arquivo.");
+            }
         }
 
         async function pegarHistorico() {
-            const tel = document.getElementById('telefone').value;
-            if (!tel) {
-                alert("Por favor, digite um número de telefone.");
+            const tel = document.getElementById('telefone').value.trim();
+            if (!tel || tel.length < 3) {
+                // Não busca se estiver muito curto
                 return;
             }
             try {
                 const response = await fetch(`http://localhost:6060/chat/historico/${tel}`);
+                if (!response.ok) return;
+
                 const resposta = await response.json();
                 
                 const chatBox = document.getElementById('chat-box');
                 chatBox.innerHTML = ''; // Limpar o chat atual
 
+                if (resposta.length === 0) {
+                    chatBox.innerHTML = `<div class="message bot">Nenhum histórico encontrado para este número.</div>`;
+                    return;
+                }
+
                 resposta.forEach(msg => {
-                    chatBox.innerHTML += `<p><strong>Você:</strong> ${msg.question}</p>`;
-                    chatBox.innerHTML += `<p><strong>Bot:</strong> ${msg.answer}</p>`;
+                    chatBox.innerHTML += `<div class="message user">${msg.question}</div>`;
+                    chatBox.innerHTML += `<div class="message bot">${msg.answer}</div>`;
                 });
                 chatBox.scrollTop = chatBox.scrollHeight;
                 
             } catch (error) {
                 console.error("Erro ao buscar histórico:", error);
-                alert("Erro ao buscar histórico.");
             }
         }
     </script>
 </body>
+</html>
 </html>
