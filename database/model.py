@@ -12,3 +12,9 @@ class Mensagem(Base):
     answer : Mapped[str] = mapped_column(String(10000), nullable=False)
     date : Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now())
 
+class Usuario(Base):
+    __tablename__ = 'usuario'
+
+    id : Mapped[int] = mapped_column(primary_key=True)
+    name : Mapped[str] = mapped_column(String(20), nullable=False)
+    hash : Mapped[str] = mapped_column(String(64), nullable=False)
