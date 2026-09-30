@@ -5,8 +5,11 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Chatbot IFRS</title>
+    <title>Chatbot IFRS - Ambiente de Testes</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #e5ddd5; /* Cor de fundo estilo WhatsApp */
@@ -14,11 +17,97 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
+
+        /* Card de Login */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+            padding: 30px 25px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-header h2 {
+            margin: 0 0 8px 0;
+            color: #075e54;
+            font-size: 1.4rem;
+        }
+        .login-header p {
+            margin: 0;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .login-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #128c7e;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #25d366;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-login:hover {
+            background-color: #128c7e;
+        }
+        .login-hint {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Container Principal do Teste */
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -30,43 +119,80 @@
         .header {
             background-color: #075e54;
             color: white;
-            padding: 15px 20px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             z-index: 10;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .header h2 {
             margin: 0;
             font-size: 1.2rem;
         }
+        .header .actions-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
         .header .tel-input {
             display: flex;
-            gap: 10px;
+            gap: 6px;
         }
         .header input {
-            padding: 8px 12px;
+            padding: 7px 12px;
             border-radius: 20px;
             border: none;
             outline: none;
-            font-size: 14px;
-            width: 200px;
+            font-size: 13px;
+            width: 160px;
         }
-        .header button {
-            padding: 8px 15px;
+        .header button.btn-search {
+            padding: 7px 14px;
             border-radius: 20px;
             border: none;
             background-color: #25d366;
             color: white;
             cursor: pointer;
             font-weight: bold;
+            font-size: 13px;
         }
-        .header button:hover {
+        .header button.btn-search:hover {
             background-color: #128c7e;
         }
+        .user-session {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 15px;
+        }
+        .btn-logout {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover {
+            background: #b71c1c;
+        }
+
         .admin-panel {
-            background: #f0f0f0;
+            background: #f7f7f7;
             padding: 10px 20px;
             border-bottom: 1px solid #ddd;
             display: flex;
@@ -93,7 +219,7 @@
             flex: 1;
             padding: 20px;
             background-color: #e5ddd5;
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* WhatsApp pattern background */
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
             background-repeat: repeat;
             overflow-y: auto;
             display: flex;
@@ -154,25 +280,46 @@
         .input-area button:hover {
             background-color: #008f6f;
         }
-        
-        /* Adicionando um indicador de carregamento (opcional) */
-        .typing {
-            font-size: 12px;
-            color: #888;
-            font-style: italic;
-            display: none;
-            margin-top: 5px;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Card de Autenticação JWT do Administrador -->
+    <div id="login-container" class="login-card">
+        <div class="login-header">
+            <h2>🔐 Chatbot IFRS</h2>
+            <p>Acesso restrito ao ambiente de testes e envio de arquivos. Autentique-se com o usuário administrador genérico.</p>
+        </div>
+        <div id="login-error" class="login-error"></div>
+        <form id="login-form" onsubmit="realizarLogin(event)">
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" value="admin" required placeholder="admin">
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" required placeholder="Digite a senha">
+            </div>
+            <button type="submit" class="btn-login" id="btn-login">Entrar</button>
+            <div class="login-hint">Usuário padrão: <strong>admin</strong> | Senha padrão: <strong>admin123</strong></div>
+        </form>
+    </div>
+
+    <!-- Interface Principal do Frontend de Testes -->
+    <div id="app-container" class="container" style="display: none;">
         <!-- Cabeçalho -->
         <div class="header">
-            <h2>Chatbot IFRS</h2>
-            <div class="tel-input">
-                <input type="text" id="telefone" oninput="pegarHistorico()" value="123" placeholder="Número de telefone...">
-                <button type="button" onclick="pegarHistorico()">Buscar</button>
+            <div class="header-title-box">
+                <h2>Chatbot IFRS</h2>
+            </div>
+            <div class="actions-area">
+                <div class="tel-input">
+                    <input type="text" id="telefone" oninput="pegarHistorico()" value="123" placeholder="Telefone...">
+                    <button type="button" class="btn-search" onclick="pegarHistorico()">Buscar</button>
+                </div>
+                <div class="user-session">
+                    <span id="user-display">👤 admin</span>
+                    <button type="button" class="btn-logout" onclick="realizarLogout()">Sair</button>
+                </div>
             </div>
         </div>
 
@@ -199,6 +346,127 @@
     </div>
 
     <script>
+        const API_URL = 'http://localhost:6060';
+
+        function getAuthToken() {
+            return localStorage.getItem('jwt_admin_token');
+        }
+
+        function setAuthToken(token) {
+            localStorage.setItem('jwt_admin_token', token);
+        }
+
+        function removeAuthToken() {
+            localStorage.removeItem('jwt_admin_token');
+        }
+
+        function mostrarLogin(mensagemErro) {
+            document.getElementById('app-container').style.display = 'none';
+            const loginCard = document.getElementById('login-container');
+            loginCard.style.display = 'block';
+
+            const errorDiv = document.getElementById('login-error');
+            if (mensagemErro) {
+                errorDiv.textContent = mensagemErro;
+                errorDiv.style.display = 'block';
+            } else {
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        function mostrarApp(username) {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('app-container').style.display = 'flex';
+            if (username) {
+                document.getElementById('user-display').textContent = `👤 ${username}`;
+            }
+        }
+
+        async function verificarAutenticacao() {
+            const token = getAuthToken();
+            if (!token) {
+                mostrarLogin();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/verify`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const username = data.user ? data.user.username : 'admin';
+                    mostrarApp(username);
+                    pegarHistorico();
+                } else {
+                    removeAuthToken();
+                    mostrarLogin('Sessão expirada. Faça login novamente.');
+                }
+            } catch (error) {
+                console.warn('Erro ao conectar com a API para validar token:', error);
+                // Permite login se o servidor estiver inacessível
+                mostrarLogin('Não foi possível conectar à API.');
+            }
+        }
+
+        async function realizarLogin(event) {
+            if (event) event.preventDefault();
+
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const errorDiv = document.getElementById('login-error');
+            const btnLogin = document.getElementById('btn-login');
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!username || !password) {
+                errorDiv.textContent = 'Preencha usuário e senha.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+            btnLogin.disabled = true;
+            btnLogin.textContent = 'Entrando...';
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setAuthToken(data.access_token);
+                    passwordInput.value = '';
+                    mostrarApp(username);
+                    pegarHistorico();
+                } else {
+                    const err = await response.json().catch(() => ({}));
+                    errorDiv.textContent = err.detail || 'Usuário ou senha inválidos.';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Erro ao conectar ao servidor em ' + API_URL;
+                errorDiv.style.display = 'block';
+            } finally {
+                btnLogin.disabled = false;
+                btnLogin.textContent = 'Entrar';
+            }
+        }
+
+        function realizarLogout() {
+            removeAuthToken();
+            mostrarLogin();
+        }
+
         function handleKeyPress(event) {
             if (event.key === 'Enter') {
                 fazerPergunta();
@@ -217,29 +485,28 @@
             }
 
             const chatBox = document.getElementById('chat-box');
-            // Adicionar pergunta do usuário na tela
             chatBox.innerHTML += `<div class="message user">${perguntaTexto}</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
             const pergunta = {
-                "pergunta": perguntaTexto, 
-                "tel": telInput // Enviar telefone caso o backend passe a utilizar no query
+                "pergunta": perguntaTexto,
+                "tel": telInput
             };
 
-            // Limpar input
             perguntaInput.value = '';
 
             try {
-                const response = await fetch('http://localhost:6060/chat/query', {
+                const headers = { 'Content-Type': 'application/json' };
+                const token = getAuthToken();
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const response = await fetch(`${API_URL}/chat/query`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: headers,
                     body: JSON.stringify(pergunta)
                 });
                 const resposta = await response.json();
                 
-                // Adicionar resposta do bot na tela
                 chatBox.innerHTML += `<div class="message bot">${resposta.resposta}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             } catch (error) {
@@ -250,64 +517,104 @@
         }
 
         async function enviarArquivo() {
-            const formData = new FormData();
+            const token = getAuthToken();
+            if (!token) {
+                alert("Acesso restrito: você deve estar autenticado como administrador para enviar arquivos.");
+                realizarLogout();
+                return;
+            }
+
             const arquivoInput = document.getElementById('arquivo');
-            if(arquivoInput.files.length === 0){
+            if (arquivoInput.files.length === 0) {
                 alert("Selecione um arquivo primeiro.");
                 return;
             }
+
+            const formData = new FormData();
             const arquivo = arquivoInput.files[0];
             formData.append('arquivo', arquivo);
 
             try {
-                const response = await fetch('http://localhost:6060/rag/treinar', {
+                const response = await fetch(`${API_URL}/rag/treinar`, {
                     method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: formData
                 });
+
+                if (response.status === 401) {
+                    alert("Sua sessão expirou ou o token é inválido. Por favor, autentique-se novamente.");
+                    realizarLogout();
+                    return;
+                }
+
                 const resposta = await response.json();
-                alert("Resposta: " + resposta);
+                alert("Resposta: " + (typeof resposta === 'object' ? JSON.stringify(resposta) : resposta));
+                arquivoInput.value = '';
             } catch (error) {
-                alert("Erro ao treinar arquivo.");
+                alert("Erro ao treinar arquivo: " + error.message);
             }
         }
 
         async function deletarArquivo() {
+            const token = getAuthToken();
+            if (!token) {
+                alert("Acesso restrito: você deve estar autenticado como administrador para deletar arquivos.");
+                realizarLogout();
+                return;
+            }
+
             const nomeArquivo = document.getElementById('toDelete').value.trim();
-            if(!nomeArquivo) {
+            if (!nomeArquivo) {
                 alert("Digite o nome do arquivo para deletar.");
                 return;
             }
             const arquivo = {'nome_arquivo': nomeArquivo};
 
             try {
-                const response = await fetch('http://localhost:6060/rag/deletar', {
+                const response = await fetch(`${API_URL}/rag/deletar`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(arquivo)
                 });
+
+                if (response.status === 401) {
+                    alert("Sua sessão expirou ou o token é inválido. Por favor, autentique-se novamente.");
+                    realizarLogout();
+                    return;
+                }
+
                 const resposta = await response.json();
-                alert("Resposta: " + resposta);
+                alert("Resposta: " + (typeof resposta === 'object' ? JSON.stringify(resposta) : resposta));
+                document.getElementById('toDelete').value = '';
             } catch (error) {
-                alert("Erro ao deletar arquivo.");
+                alert("Erro ao deletar arquivo: " + error.message);
             }
         }
 
         async function pegarHistorico() {
             const tel = document.getElementById('telefone').value.trim();
             if (!tel || tel.length < 3) {
-                // Não busca se estiver muito curto
                 return;
             }
             try {
-                const response = await fetch(`http://localhost:6060/chat/historico/${tel}`);
+                const headers = {};
+                const token = getAuthToken();
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const response = await fetch(`${API_URL}/chat/historico/${tel}`, {
+                    headers: headers
+                });
                 if (!response.ok) return;
 
                 const resposta = await response.json();
                 
                 const chatBox = document.getElementById('chat-box');
-                chatBox.innerHTML = ''; // Limpar o chat atual
+                chatBox.innerHTML = '';
 
                 if (resposta.length === 0) {
                     chatBox.innerHTML = `<div class="message bot">Nenhum histórico encontrado para este número.</div>`;
@@ -325,7 +632,7 @@
             }
         }
 
-        window.onload = pegarHistorico;111
+        window.onload = verificarAutenticacao;
     </script>
 </body>
 </html>

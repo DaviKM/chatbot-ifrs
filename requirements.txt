@@ -3,6 +3,7 @@ uvicorn
 fastapi
 dotenv
 python-multipart
+pyjwt
 
 #RAG
 pypdf

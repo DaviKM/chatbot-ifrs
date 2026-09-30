@@ -9,3 +9,6 @@ def hash(content: str) -> str:
 
 def verify_hash(content: str, hashed: str) -> bool:
     return hash(content) == hashed
+
+if __name__ == "__main__":
+    print(hash("oidavi"))  # Exemplo de uso
