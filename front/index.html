@@ -2,353 +2,1323 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Chatbot IFRS - Ambiente de Testes</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css" integrity="sha512-x9WwyMYBnlXMNQ6kQ/Lyzu1NqIhLQKL5Oq6xByfXuRj7s9CskyCbLv/1IjqzJmXwFXWr0ov6jBV7Qbc0hh9nHg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <title>Painel Administrativo - Chatbot IFRS</title>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        :root {
+            --primary: #075e54;
+            --primary-hover: #054c44;
+            --primary-light: #e8f5e9;
+            --accent: #128c7e;
+            --accent-hover: #0e6f63;
+            --whatsapp-green: #25d366;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --danger-bg: #fef2f2;
+            --warning-bg: #fffbeb;
+            --warning-text: #b45309;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
         * {
             box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e5ddd5; /* Cor de fundo estilo WhatsApp */
             margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ================= TOASTS DE NOTIFICAÇÃO ================= */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            pointer-events: auto;
+            min-width: 280px;
+            max-width: 420px;
+            padding: 12px 18px;
+            border-radius: var(--radius-md);
+            background: white;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideInRight 0.3s ease forwards;
+            border-left: 5px solid #64748b;
+        }
+        .toast.success { border-left-color: #10b981; color: #065f46; }
+        .toast.error { border-left-color: var(--danger); color: #991b1b; }
+        .toast.info { border-left-color: #3b82f6; color: #1e40af; }
+        .toast i { font-size: 18px; }
+        .toast-msg { flex: 1; }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.9); }
+        }
+
+        /* ================= TELA DE LOGIN ================= */
+        .login-wrapper {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
         }
-
-        /* Card de Login */
         .login-card {
             width: 100%;
             max-width: 420px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
-            padding: 30px 25px;
-            display: none;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 35px 30px;
             animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            border: 1px solid var(--border-color);
         }
         .login-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        .login-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 15px auto;
         }
         .login-header h2 {
-            margin: 0 0 8px 0;
-            color: #075e54;
-            font-size: 1.4rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 6px;
         }
         .login-header p {
-            margin: 0;
-            color: #666;
+            color: var(--text-muted);
             font-size: 13px;
-            line-height: 1.4;
+            line-height: 1.5;
         }
         .login-error {
-            background-color: #ffebee;
-            color: #c62828;
-            border: 1px solid #ffcdd2;
-            border-radius: 6px;
-            padding: 10px 12px;
-            margin-bottom: 16px;
+            background-color: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 18px;
             font-size: 13px;
             display: none;
+            align-items: center;
+            gap: 8px;
         }
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
         .form-group label {
             display: block;
             margin-bottom: 6px;
-            color: #333;
+            color: var(--text-dark);
             font-weight: 600;
             font-size: 13px;
         }
         .form-group input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 11px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            background: #f8fafc;
         }
         .form-group input:focus {
-            border-color: #128c7e;
+            border-color: var(--accent);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(18, 140, 126, 0.15);
         }
         .btn-login {
             width: 100%;
             padding: 12px;
             border: none;
-            border-radius: 6px;
-            background-color: #25d366;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             font-size: 15px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: opacity 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .btn-login:hover {
-            background-color: #128c7e;
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+        .btn-login:active {
+            transform: translateY(0);
         }
         .login-hint {
-            margin-top: 15px;
+            margin-top: 20px;
             text-align: center;
             font-size: 12px;
-            color: #888;
+            color: var(--text-muted);
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px dashed var(--border-color);
         }
 
-        /* Container Principal do Teste */
-        .container {
-            width: 100%;
-            max-width: 850px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex;
+        /* ================= APLICAÇÃO PRINCIPAL (ADMIN PORTAL) ================= */
+        #app-container {
+            display: none;
             flex-direction: column;
-            height: 95vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
-        .header {
-            background-color: #075e54;
+
+        /* Barra Superior (Top Header) */
+        .top-navbar {
+            background-color: var(--primary);
             color: white;
-            padding: 12px 20px;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            z-index: 10;
-            flex-wrap: wrap;
-            gap: 10px;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .header-title-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .header h2 {
-            margin: 0;
-            font-size: 1.2rem;
-        }
-        .header .actions-area {
+        .brand-box {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        .header .tel-input {
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
             display: flex;
-            gap: 6px;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
         }
-        .header input {
-            padding: 7px 12px;
+        .brand-text h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .brand-text span {
+            font-size: 11px;
+            color: #bbf7d0;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+        }
+        .top-user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 14px;
             border-radius: 20px;
-            border: none;
-            outline: none;
             font-size: 13px;
-            width: 160px;
-        }
-        .header button.btn-search {
-            padding: 7px 14px;
-            border-radius: 20px;
-            border: none;
-            background-color: #25d366;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 13px;
-        }
-        .header button.btn-search:hover {
-            background-color: #128c7e;
-        }
-        .user-session {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 4px 10px;
-            border-radius: 15px;
+            font-weight: 500;
         }
         .btn-logout {
-            background: #d32f2f;
+            background: rgba(239, 68, 68, 0.9);
             color: white;
             border: none;
-            border-radius: 12px;
-            padding: 4px 10px;
-            font-size: 11px;
+            border-radius: 8px;
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-logout:hover {
-            background: #b71c1c;
+            background: var(--danger);
+            transform: translateY(-1px);
         }
 
-        .admin-panel {
-            background: #f7f7f7;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
+        /* Menu Principal de Navegação (Tabs Bar) */
+        .menu-nav-bar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
             display: flex;
             gap: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+        .nav-item {
+            padding: 16px 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
             align-items: center;
-            font-size: 13px;
-            flex-wrap: wrap;
-        }
-        .admin-panel input, .admin-panel button {
-            padding: 6px 10px;
-            font-size: 13px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .admin-panel button {
-            background: #fff;
+            gap: 10px;
+            border-bottom: 3px solid transparent;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-item:hover {
+            color: var(--primary);
+            background: #f8fafc;
+        }
+        .nav-item.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: #f0fdf4;
+        }
+        .nav-badge {
+            background: #e2e8f0;
+            color: var(--text-dark);
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+        .nav-item.active .nav-badge {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Cabeçalho da Seção */
+        .section-header {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .section-title-box h2 {
+            font-size: 1.4rem;
+            color: var(--text-dark);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title-box p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* ================= ABA 1: ADICIONAR DOCUMENTO ================= */
+        .upload-card-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .upload-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            box-shadow: var(--shadow-sm);
+        }
+        .dropzone {
+            border: 2px dashed #94a3b8;
+            border-radius: var(--radius-md);
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--accent);
+            background: #f0fdf4;
+            transform: scale(1.005);
+        }
+        .dropzone-icon {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        .dropzone h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        .dropzone p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .dropzone-formats {
+            display: inline-block;
+            margin-top: 12px;
+            background: #e2e8f0;
+            color: #475569;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .file-preview {
+            display: none;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .file-icon {
+            font-size: 32px;
+            color: var(--danger);
+        }
+        .file-details h4 {
+            font-size: 14px;
+            color: var(--text-dark);
+            word-break: break-all;
+        }
+        .file-details span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .btn-remove-file {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 6px;
             transition: background 0.2s;
         }
-        .admin-panel button:hover {
-            background: #e9e9e9;
+        .btn-remove-file:hover {
+            background: var(--danger-bg);
         }
-        .chat-box {
+        .upload-actions {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .info-box {
+            margin-top: 25px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            font-size: 13px;
+            color: #166534;
+        }
+        .info-box h4 {
+            font-size: 14px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-box ul {
+            margin-left: 20px;
+            margin-top: 6px;
+            line-height: 1.6;
+        }
+
+        /* ================= ABA 2: GERENCIAR ARQUIVOS / APAGAR ================= */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .stat-icon.green { background: #dcfce7; color: #15803d; }
+        .stat-icon.blue { background: #dbeafe; color: #1d4ed8; }
+        .stat-icon.purple { background: #f3e8ff; color: #7e22ce; }
+        .stat-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .stat-content p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .filter-bar {
+            background: white;
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 14px;
+            flex: 1;
+            max-width: 400px;
+        }
+        .search-box i { color: var(--text-muted); font-size: 14px; }
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+        }
+        .filter-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-secondary {
+            background: #f8fafc;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Tabela de Arquivos */
+        .table-responsive {
+            background: white;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            overflow-x: auto;
+        }
+        .files-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+        .files-table th {
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        .files-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            color: var(--text-dark);
+        }
+        .files-table tr:last-child td {
+            border-bottom: none;
+        }
+        .files-table tr:hover td {
+            background: #f8fafc;
+        }
+        .file-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            max-width: 380px;
+        }
+        .file-type-icon {
+            font-size: 24px;
+            color: var(--danger);
+            flex-shrink: 0;
+        }
+        .file-name-text {
+            word-break: break-all;
+        }
+        .tag-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .btn-delete {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-delete:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        /* Estado Vazio */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .empty-icon {
+            font-size: 48px;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+        .empty-state h3 {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+        .empty-state p {
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        /* ================= ABA 3: SIMULADOR DE CHAT ================= */
+        .chat-simulator-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 160px);
+            min-height: 550px;
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+        .chat-session-bar {
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .phone-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .phone-input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .phone-input-group input {
+            padding: 7px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            width: 150px;
+            outline: none;
+        }
+        .phone-input-group input:focus {
+            border-color: var(--primary);
+        }
+        .chat-header-bar {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-bot-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .chat-bot-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .chat-bot-info p {
+            font-size: 11px;
+            color: #bbf7d0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .chat-bot-info p::before {
+            content: '';
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+        .chat-messages-area {
             flex: 1;
             padding: 20px;
-            background-color: #e5ddd5;
+            background-color: #efeae2;
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
             background-repeat: repeat;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 14px;
         }
-        .message {
-            max-width: 75%;
+        .chat-bubble {
+            max-width: 80%;
             padding: 12px 16px;
-            border-radius: 15px;
-            line-height: 1.4;
-            position: relative;
+            border-radius: 12px;
+            line-height: 1.45;
             word-wrap: break-word;
-            font-size: 15px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            font-size: 14px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
-        .message.user {
-            background-color: #dcf8c6;
+        .chat-bubble.user {
+            background-color: #d9fdd3;
             align-self: flex-end;
             border-top-right-radius: 0;
+            color: #111b21;
         }
-        .message.bot {
-            background-color: #fff;
+        .chat-bubble.bot {
+            background-color: #ffffff;
             align-self: flex-start;
             border-top-left-radius: 0;
+            color: #111b21;
         }
-        .input-area {
+        .chat-bubble.loading {
+            background-color: #ffffff;
+            align-self: flex-start;
+            border-top-left-radius: 0;
             display: flex;
-            padding: 15px 20px;
-            background: #f0f0f0;
             align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-style: italic;
         }
-        .input-area input {
+        .typing-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .chat-input-bar {
+            padding: 12px 18px;
+            background: #f0f2f5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+        .chat-input-bar input {
             flex: 1;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 30px;
+            padding: 12px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
             outline: none;
-            font-size: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-size: 14px;
+            background: white;
+            transition: border-color 0.2s;
         }
-        .input-area button {
-            background-color: #00a884;
+        .chat-input-bar input:focus {
+            border-color: var(--accent);
+        }
+        .btn-send {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            margin-left: 15px;
             cursor: pointer;
-            font-size: 20px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            transition: background 0.2s;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s;
+            flex-shrink: 0;
         }
-        .input-area button:hover {
-            background-color: #008f6f;
+        .btn-send:hover {
+            background: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        /* ================= MODAL DE CONFIRMAÇÃO ================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 460px;
+            border-radius: var(--radius-lg);
+            padding: 26px;
+            box-shadow: var(--shadow-lg);
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .modal-icon-danger {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--danger-bg);
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .modal-header h3 {
+            font-size: 17px;
+            color: var(--text-dark);
+        }
+        .modal-body p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        .modal-target-file {
+            background: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            word-break: break-all;
+            border: 1px solid var(--border-color);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* ================= ANIMAÇÕES GERAIS ================= */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .menu-nav-bar {
+                padding: 0 10px;
+                overflow-x: auto;
+            }
+            .nav-item {
+                padding: 12px 14px;
+                font-size: 13px;
+                white-space: nowrap;
+            }
+            .main-content {
+                padding: 16px;
+            }
+            .chat-simulator-container {
+                height: calc(100vh - 200px);
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Card de Autenticação JWT do Administrador -->
-    <div id="login-container" class="login-card">
-        <div class="login-header">
-            <h2><i class="fa-solid fa-comment"></i> Chatbot IFRS</h2>
-            <p>Acesso restrito ao ambiente de testes e envio de arquivos. Autentique-se com o usuário administrador genérico.</p>
-        </div>
-        <div id="login-error" class="login-error"></div>
-        <form id="login-form" onsubmit="realizarLogin(event)">
-            <div class="form-group">
-                <label for="username">Usuário</label>
-                <input type="text" id="username" value="admin" required placeholder="admin">
-            </div>
-            <div class="form-group">
-                <label for="password">Senha</label>
-                <input type="password" id="password" required placeholder="Digite a senha">
-            </div>
-            <button type="submit" class="btn-login" id="btn-login">Entrar</button>
-            <div class="login-hint">Usuário padrão: <strong>admin</strong> | Senha padrão: <strong>admin123</strong></div>
-        </form>
-    </div>
 
-    <!-- Interface Principal do Frontend de Testes -->
-    <div id="app-container" class="container" style="display: none;">
-        <!-- Cabeçalho -->
-        <div class="header">
-            <div class="header-title-box">
+    <!-- Container de Mensagens Toast -->
+    <div id="toast-container"></div>
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-container" class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
                 <h2>Chatbot IFRS</h2>
+                <p>Painel Administrativo para Gerenciamento de Editais e Simulador da IA.</p>
             </div>
-            <div class="actions-area">
-                <div class="tel-input">
-                    <input type="text" id="telefone" oninput="pegarHistorico()" value="123" placeholder="Telefone...">
-                    <button type="button" class="btn-search" onclick="pegarHistorico()">Buscar</button>
-                </div>
-                <div class="user-session">
-                    <i class="fa-solid fa-user"></i><span id="user-display">admin</span>
-                    <button type="button" class="btn-logout" onclick="realizarLogout()">Sair</button>
-                </div>
+
+            <div id="login-error" class="login-error">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="login-error-text">Credenciais incorretas.</span>
             </div>
-        </div>
 
-        <!-- Painel de Administração -->
-        <div class="admin-panel">
-            <strong>Admin:</strong>
-            <input type="file" id="arquivo">
-            <button type="button" onclick="enviarArquivo()">Treinar Arquivo</button>
-            <span style="color: #ccc;">|</span>
-            <input type="text" id="toDelete" placeholder="Nome do arquivo...">
-            <button type="button" onclick="deletarArquivo()">Apagar Arquivo</button>
-        </div>
-
-        <!-- Área do Chat -->
-        <div id="chat-box" class="chat-box">
-            <div class="message bot">Olá! Digite seu telefone acima e envie uma pergunta.</div>
-        </div>
-
-        <!-- Área de Input -->
-        <div class="input-area">
-            <input type="text" id="pergunta" placeholder="Digite sua mensagem..." onkeypress="handleKeyPress(event)">
-            <button type="button" onclick="fazerPergunta()">➤</button>
+            <form id="login-form" onsubmit="realizarLogin(event)">
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" value="admin" required placeholder="Digite seu usuário">
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" required placeholder="Digite sua senha">
+                </div>
+                <button type="submit" class="btn-login" id="btn-login">
+                    <i class="fa-solid fa-right-to-bracket"></i> Entrar no Painel
+                </button>
+                <div class="login-hint">
+                    Usuário padrão: <strong>admin</strong> | Senha padrão: <strong>admin123</strong>
+                </div>
+            </form>
         </div>
     </div>
 
+    <!-- APLICAÇÃO PRINCIPAL (ADMIN PORTAL) -->
+    <div id="app-container">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="brand-box">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>Chatbot IFRS</h1>
+                    <span>Painel do Administrador</span>
+                </div>
+            </div>
+
+            <div class="top-user-area">
+                <div class="user-badge">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span id="user-display">admin</span>
+                </div>
+                <button class="btn-logout" onclick="realizarLogout()" title="Encerrar sessão">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
+                </button>
+            </div>
+        </header>
+
+        <!-- Menu de Navegação / Tabs -->
+        <nav class="menu-nav-bar">
+            <div class="nav-item active" id="tab-nav-adicionar" onclick="trocarAba('adicionar')">
+                <i class="fa-solid fa-file-circle-plus"></i>
+                <span>Adicionar Edital / Documento</span>
+            </div>
+            <div class="nav-item" id="tab-nav-gerenciar" onclick="trocarAba('gerenciar')">
+                <i class="fa-solid fa-folder-open"></i>
+                <span>Apagar / Gerenciar Arquivos</span>
+                <span class="nav-badge" id="badge-total-arquivos">0</span>
+            </div>
+            <div class="nav-item" id="tab-nav-chat" onclick="trocarAba('chat')">
+                <i class="fa-solid fa-comments"></i>
+                <span>Simulador de Chat</span>
+            </div>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+
+            <!-- ================= PAINEL 1: ADICIONAR EDITAL / DOCUMENTO ================= -->
+            <section id="panel-adicionar" class="tab-panel active">
+                <div class="section-header">
+                    <div class="section-title-box">
+                        <h2><i class="fa-solid fa-file-circle-plus" style="color: var(--primary);"></i> Adicionar Novo Edital ou Documento</h2>
+                        <p>Faça o envio de arquivos PDF para treinar a base de conhecimento do assistente virtual.</p>
+                    </div>
+                </div>
+
+                <div class="upload-card-container">
+                    <div class="upload-card">
+                        <!-- Dropzone de Arquivo -->
+                        <div class="dropzone" id="dropzone" onclick="document.getElementById('arquivo-input').click()">
+                            <input type="file" id="arquivo-input" accept=".pdf" style="display: none;" onchange="selecionarArquivo(event)">
+                            <div class="dropzone-icon">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <h3>Arraste o arquivo PDF aqui ou clique para selecionar</h3>
+                            <p>Envie editais, manuais do candidato ou regulamentos em PDF</p>
+                            <span class="dropzone-formats">Formato: PDF (processamento em chunks vetoriais)</span>
+                        </div>
+
+                        <!-- Card de Arquivo Selecionado -->
+                        <div class="file-preview" id="file-preview">
+                            <div class="file-info">
+                                <i class="fa-solid fa-file-pdf file-icon"></i>
+                                <div class="file-details">
+                                    <h4 id="preview-filename">edital.pdf</h4>
+                                    <span id="preview-filesize">0 KB</span>
+                                </div>
+                            </div>
+                            <button class="btn-remove-file" onclick="limparSelecaoArquivo()" title="Remover seleção">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <!-- Botão de Ação -->
+                        <div class="upload-actions">
+                            <button class="btn-primary" id="btn-treinar" onclick="enviarArquivo()" disabled>
+                                <i class="fa-solid fa-bolt"></i> Processar e Treinar Documento
+                            </button>
+                        </div>
+
+                        <!-- Explicação de Como Funciona -->
+                        <div class="info-box">
+                            <h4><i class="fa-solid fa-circle-info"></i> Como funciona a indexação?</h4>
+                            <ul>
+                                <li>O arquivo PDF é lido página a página e seu texto é extraído.</li>
+                                <li>O conteúdo é dividido em blocos semânticos (chunks) com sobreposição para preservar contexto.</li>
+                                <li>Os chunks são vetorizados via modelo de embeddings e indexados no <strong>Qdrant</strong>.</li>
+                                <li>Após o treinamento, o simulador de chat responderá dúvidas baseando-se nas informações desse documento.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PAINEL 2: GERENCIAR / APAGAR ARQUIVOS ================= -->
+            <section id="panel-gerenciar" class="tab-panel">
+                <div class="section-header">
+                    <div class="section-title-box">
+                        <h2><i class="fa-solid fa-folder-open" style="color: var(--primary);"></i> Arquivos Salvos na Base de Conhecimento</h2>
+                        <p>Consulte todos os arquivos salvos no servidor com suas informações e apague documentos desatualizados.</p>
+                    </div>
+                    <div>
+                        <button class="btn-primary" onclick="trocarAba('adicionar')">
+                            <i class="fa-solid fa-plus"></i> Adicionar Outro Arquivo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estatísticas Rápidas -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-total-arquivos">0</h3>
+                            <p>Documentos Salvos</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-hard-drive"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-total-tamanho">0 MB</h3>
+                            <p>Espaço Utilizado</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-status-ia">Ativo</h3>
+                            <p>Base Qdrant Indexada</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barra de Busca e Filtro -->
+                <div class="filter-bar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="search-input" placeholder="Buscar por nome do arquivo..." oninput="filtrarArquivos()">
+                    </div>
+                    <div class="filter-actions">
+                        <span style="font-size: 13px; color: var(--text-muted);" id="filter-count-label">Carregando arquivos...</span>
+                        <button class="btn-secondary" onclick="carregarListaArquivos(true)" title="Recarregar lista">
+                            <i class="fa-solid fa-rotate" id="refresh-icon"></i> Atualizar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabela de Arquivos -->
+                <div class="table-responsive">
+                    <table class="files-table" id="files-table">
+                        <thead>
+                            <tr>
+                                <th>Nome do Documento</th>
+                                <th>Formato</th>
+                                <th>Tamanho</th>
+                                <th>Páginas</th>
+                                <th>Data de Modificação</th>
+                                <th style="text-align: right;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="files-tbody">
+                            <!-- Inserido dinamicamente via JavaScript -->
+                        </tbody>
+                    </table>
+
+                    <!-- Estado Vazio -->
+                    <div id="empty-state" class="empty-state" style="display: none;">
+                        <div class="empty-icon">
+                            <i class="fa-regular fa-folder-open"></i>
+                        </div>
+                        <h3>Nenhum arquivo encontrado</h3>
+                        <p>Você ainda não enviou nenhum edital ou a busca não encontrou resultados.</p>
+                        <button class="btn-primary" onclick="trocarAba('adicionar')">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Adicionar Primeiro Edital
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PAINEL 3: SIMULADOR DE CHAT ================= -->
+            <section id="panel-chat" class="tab-panel">
+                <div class="section-header">
+                    <div class="section-title-box">
+                        <h2><i class="fa-solid fa-comments" style="color: var(--primary);"></i> Simulador de Atendimento ao Candidato</h2>
+                        <p>Teste as respostas do chatbot com base nos editais indexados.</p>
+                    </div>
+                </div>
+
+                <div class="chat-simulator-container">
+                    <!-- Barra de Configuração da Sessão -->
+                    <div class="chat-session-bar">
+                        <div class="phone-input-group">
+                            <label for="telefone"><i class="fa-solid fa-phone"></i> Telefone / Sessão:</label>
+                            <input type="text" id="telefone" value="123" placeholder="Telefone do usuário" onchange="pegarHistorico()">
+                            <button class="btn-secondary" onclick="pegarHistorico()" title="Buscar histórico deste telefone">
+                                <i class="fa-solid fa-clock-rotate-left"></i> Histórico
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn-secondary" onclick="limparChatTela()" title="Limpar conversa da tela">
+                                <i class="fa-solid fa-broom"></i> Limpar Tela
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cabeçalho do Chat -->
+                    <div class="chat-header-bar">
+                        <div class="chat-bot-avatar">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="chat-bot-info">
+                            <h3>Assistente IFRS</h3>
+                            <p>Online • RAG Ativo</p>
+                        </div>
+                    </div>
+
+                    <!-- Mensagens -->
+                    <div class="chat-messages-area" id="chat-box">
+                        <div class="chat-bubble bot">
+                            Olá! Sou o assistente virtual do IFRS. Faça uma pergunta sobre o processo seletivo, cotas, prazos ou cursos disponíveis nos editais cadastrados.
+                        </div>
+                    </div>
+
+                    <!-- Input de Pergunta -->
+                    <div class="chat-input-bar">
+                        <input type="text" id="pergunta" placeholder="Digite sua pergunta sobre o edital..." onkeypress="handleKeyPress(event)" autocomplete="off">
+                        <button class="btn-send" onclick="fazerPergunta()" title="Enviar mensagem">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-icon-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h3>Confirmar Exclusão de Arquivo</h3>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p>Você tem certeza que deseja apagar o seguinte documento da base de dados?</p>
+                <div class="modal-target-file">
+                    <i class="fa-solid fa-file-pdf" style="color: var(--danger);"></i>
+                    <span id="modal-filename-display">nome-do-arquivo.pdf</span>
+                </div>
+                <p style="font-size: 12px; color: var(--danger);">
+                    <i class="fa-solid fa-circle-exclamation"></i> Esta ação removerá o arquivo físico do servidor e todos os vetores indexados no banco Qdrant. Essa ação não pode ser desfeita.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="fecharModalExclusao()">Cancelar</button>
+                <button class="btn-primary" id="btn-confirm-delete" style="background: var(--danger);" onclick="executarExclusao()">
+                    <i class="fa-solid fa-trash-can"></i> Sim, Apagar Arquivo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT PRINCIPAL -->
     <script>
         const API_URL = 'http://localhost:6060';
+        let listaArquivosGlobal = [];
+        let arquivoParaExcluir = null;
 
+        // ================= GERENCIAMENTO DE TOKEN JWT =================
         function getAuthToken() {
             return localStorage.getItem('jwt_admin_token');
         }
@@ -361,15 +1331,39 @@
             localStorage.removeItem('jwt_admin_token');
         }
 
+        // ================= NOTIFICAÇÕES TOAST =================
+        function mostrarToast(mensagem, tipo = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${tipo}`;
+
+            let icone = 'fa-solid fa-circle-info';
+            if (tipo === 'success') icone = 'fa-solid fa-circle-check';
+            if (tipo === 'error') icone = 'fa-solid fa-circle-xmark';
+
+            toast.innerHTML = `
+                <i class="${icone}"></i>
+                <div class="toast-msg">${mensagem}</div>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ================= AUTENTICAÇÃO =================
         function mostrarLogin(mensagemErro) {
             document.getElementById('app-container').style.display = 'none';
-            const loginCard = document.getElementById('login-container');
-            loginCard.style.display = 'block';
+            document.getElementById('login-container').style.display = 'flex';
 
             const errorDiv = document.getElementById('login-error');
+            const errorText = document.getElementById('login-error-text');
             if (mensagemErro) {
-                errorDiv.textContent = mensagemErro;
-                errorDiv.style.display = 'block';
+                errorText.textContent = mensagemErro;
+                errorDiv.style.display = 'flex';
             } else {
                 errorDiv.style.display = 'none';
             }
@@ -379,8 +1373,10 @@
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('app-container').style.display = 'flex';
             if (username) {
-                document.getElementById('user-display').textContent = `${username}`;
+                document.getElementById('user-display').textContent = username;
             }
+            // Carrega a lista de arquivos salvos logo após logar
+            carregarListaArquivos();
         }
 
         async function verificarAutenticacao() {
@@ -392,24 +1388,20 @@
 
             try {
                 const response = await fetch(`${API_URL}/auth/verify`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     const username = data.user ? data.user.username : 'admin';
                     mostrarApp(username);
-                    pegarHistorico();
                 } else {
                     removeAuthToken();
                     mostrarLogin('Sessão expirada. Faça login novamente.');
                 }
             } catch (error) {
-                console.warn('Erro ao conectar com a API para validar token:', error);
-                // Permite login se o servidor estiver inacessível
-                mostrarLogin('Não foi possível conectar à API.');
+                console.warn('Erro ao conectar com a API:', error);
+                mostrarLogin('Não foi possível conectar à API (' + API_URL + '). Verifique se os serviços Docker estão em execução.');
             }
         }
 
@@ -419,27 +1411,26 @@
             const usernameInput = document.getElementById('username');
             const passwordInput = document.getElementById('password');
             const errorDiv = document.getElementById('login-error');
+            const errorText = document.getElementById('login-error-text');
             const btnLogin = document.getElementById('btn-login');
 
             const username = usernameInput.value.trim();
             const password = passwordInput.value;
 
             if (!username || !password) {
-                errorDiv.textContent = 'Preencha usuário e senha.';
-                errorDiv.style.display = 'block';
+                errorText.textContent = 'Preencha usuário e senha.';
+                errorDiv.style.display = 'flex';
                 return;
             }
 
             errorDiv.style.display = 'none';
             btnLogin.disabled = true;
-            btnLogin.textContent = 'Entrando...';
+            btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
 
             try {
                 const response = await fetch(`${API_URL}/auth/login`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
 
@@ -448,92 +1439,132 @@
                     setAuthToken(data.access_token);
                     passwordInput.value = '';
                     mostrarApp(username);
-                    pegarHistorico();
+                    mostrarToast(`Bem-vindo, ${username}!`, 'success');
                 } else {
                     const err = await response.json().catch(() => ({}));
-                    errorDiv.textContent = err.detail || 'Usuário ou senha inválidos.';
-                    errorDiv.style.display = 'block';
+                    errorText.textContent = err.detail || 'Usuário ou senha inválidos.';
+                    errorDiv.style.display = 'flex';
                 }
             } catch (error) {
-                errorDiv.textContent = 'Erro ao conectar ao servidor em ' + API_URL;
-                errorDiv.style.display = 'block';
+                errorText.textContent = 'Erro ao conectar ao servidor em ' + API_URL;
+                errorDiv.style.display = 'flex';
             } finally {
                 btnLogin.disabled = false;
-                btnLogin.textContent = 'Entrar';
+                btnLogin.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Entrar no Painel';
             }
         }
 
         function realizarLogout() {
             removeAuthToken();
             mostrarLogin();
+            mostrarToast('Sessão encerrada com sucesso.', 'info');
         }
 
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                fazerPergunta();
+        // ================= NAVEGAÇÃO DE ABAS =================
+        function trocarAba(aba) {
+            // Remove active de todas as abas
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+
+            // Ativa a aba clicada
+            const navBtn = document.getElementById(`tab-nav-${aba}`);
+            const panel = document.getElementById(`panel-${aba}`);
+
+            if (navBtn && panel) {
+                navBtn.classList.add('active');
+                panel.classList.add('active');
+            }
+
+            if (aba === 'gerenciar') {
+                carregarListaArquivos();
+            } else if (aba === 'chat') {
+                pegarHistorico();
             }
         }
 
-        async function fazerPergunta() {
-            const perguntaInput = document.getElementById('pergunta');
-            const perguntaTexto = perguntaInput.value.trim();
-            const telInput = document.getElementById('telefone').value.trim();
+        // ================= UPLOAD E TREINAMENTO =================
+        // Configuração Drag and Drop
+        const dropzone = document.getElementById('dropzone');
+        if (dropzone) {
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.classList.add('dragover');
+                }, false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.classList.remove('dragover');
+                }, false);
+            });
+            dropzone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    processarArquivoSelecionado(files[0]);
+                }
+            });
+        }
 
-            if (!perguntaTexto) return;
-            if (!telInput) {
-                alert("Por favor, digite seu número de telefone no cabeçalho antes de enviar uma mensagem.");
+        function selecionarArquivo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processarArquivoSelecionado(file);
+            }
+        }
+
+        function processarArquivoSelecionado(file) {
+            if (!file.name.toLowerCase().endsWith('.pdf')) {
+                mostrarToast('Por favor, selecione exclusivamente arquivos em formato PDF.', 'error');
+                limparSelecaoArquivo();
                 return;
             }
 
-            const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML += `<div class="message user">${perguntaTexto}</div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
+            document.getElementById('preview-filename').textContent = file.name;
+            document.getElementById('preview-filesize').textContent = formatarBytes(file.size);
+            document.getElementById('file-preview').style.display = 'flex';
+            document.getElementById('btn-treinar').disabled = false;
+        }
 
-            const pergunta = {
-                "pergunta": perguntaTexto,
-                "tel": telInput
-            };
+        function limparSelecaoArquivo() {
+            const input = document.getElementById('arquivo-input');
+            if (input) input.value = '';
+            document.getElementById('file-preview').style.display = 'none';
+            document.getElementById('btn-treinar').disabled = true;
+        }
 
-            perguntaInput.value = '';
-
-            try {
-                const headers = { 'Content-Type': 'application/json' };
-                const token = getAuthToken();
-                if (token) headers['Authorization'] = `Bearer ${token}`;
-
-                const response = await fetch(`${API_URL}/chat/query`, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify(pergunta)
-                });
-                const resposta = await response.json();
-                
-                chatBox.innerHTML += `<div class="message bot">${resposta.resposta}</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            } catch (error) {
-                console.error("Erro ao fazer pergunta:", error);
-                chatBox.innerHTML += `<div class="message bot" style="color: red;">Erro ao se conectar com o servidor.</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
+        function formatarBytes(bytes) {
+            if (!bytes || bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
         async function enviarArquivo() {
             const token = getAuthToken();
             if (!token) {
-                alert("Acesso restrito: você deve estar autenticado como administrador para enviar arquivos.");
+                mostrarToast('Sua sessão expirou. Faça login novamente.', 'error');
                 realizarLogout();
                 return;
             }
 
-            const arquivoInput = document.getElementById('arquivo');
-            if (arquivoInput.files.length === 0) {
-                alert("Selecione um arquivo primeiro.");
+            const input = document.getElementById('arquivo-input');
+            if (!input.files || input.files.length === 0) {
+                mostrarToast('Selecione um arquivo PDF primeiro.', 'error');
                 return;
             }
 
+            const arquivo = input.files[0];
             const formData = new FormData();
-            const arquivo = arquivoInput.files[0];
             formData.append('arquivo', arquivo);
+
+            const btnTreinar = document.getElementById('btn-treinar');
+            btnTreinar.disabled = true;
+            btnTreinar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Indexando na IA... Aguarde';
 
             try {
                 const response = await fetch(`${API_URL}/rag/treinar`, {
@@ -545,33 +1576,161 @@
                 });
 
                 if (response.status === 401) {
-                    alert("Sua sessão expirou ou o token é inválido. Por favor, autentique-se novamente.");
+                    mostrarToast('Sessão expirada. Autentique-se novamente.', 'error');
                     realizarLogout();
                     return;
                 }
 
-                const resposta = await response.json();
-                alert("Resposta: " + (typeof resposta === 'object' ? JSON.stringify(resposta) : resposta));
-                arquivoInput.value = '';
+                const data = await response.json();
+
+                if (response.ok && (!data.status || data.status === 'sucesso' || typeof data === 'string')) {
+                    const msg = data.mensagem || (typeof data === 'string' ? data : 'Arquivo treinado e indexado com sucesso!');
+                    mostrarToast(msg, 'success');
+                    limparSelecaoArquivo();
+                    // Atualiza a contagem e arquivos
+                    carregarListaArquivos();
+                } else {
+                    mostrarToast('Erro no treinamento: ' + (data.Erro || data.mensagem || 'Falha ao processar arquivo'), 'error');
+                }
             } catch (error) {
-                alert("Erro ao treinar arquivo: " + error.message);
+                mostrarToast('Erro ao comunicar com o servidor: ' + error.message, 'error');
+            } finally {
+                btnTreinar.disabled = false;
+                btnTreinar.innerHTML = '<i class="fa-solid fa-bolt"></i> Processar e Treinar Documento';
             }
         }
 
-        async function deletarArquivo() {
+        // ================= LISTAGEM E EXCLUSÃO DE ARQUIVOS =================
+        async function carregarListaArquivos(notificar = false) {
+            const token = getAuthToken();
+            if (!token) return;
+
+            const refreshIcon = document.getElementById('refresh-icon');
+            if (refreshIcon) refreshIcon.classList.add('fa-spin');
+
+            try {
+                const response = await fetch(`${API_URL}/rag/arquivos`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.status === 401) {
+                    realizarLogout();
+                    return;
+                }
+
+                const data = await response.json();
+                listaArquivosGlobal = data.arquivos || [];
+
+                atualizarEstatisticas(listaArquivosGlobal);
+                renderizarTabelaArquivos(listaArquivosGlobal);
+
+                if (notificar) {
+                    mostrarToast('Lista de arquivos atualizada.', 'info');
+                }
+            } catch (error) {
+                console.error('Erro ao listar arquivos:', error);
+                mostrarToast('Erro ao carregar lista de arquivos salvos.', 'error');
+            } finally {
+                if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+            }
+        }
+
+        function atualizarEstatisticas(arquivos) {
+            const total = arquivos.length;
+            document.getElementById('badge-total-arquivos').textContent = total;
+            document.getElementById('stat-total-arquivos').textContent = total;
+
+            let bytesTotal = 0;
+            arquivos.forEach(arq => {
+                bytesTotal += (arq.tamanho_bytes || 0);
+            });
+            document.getElementById('stat-total-tamanho').textContent = formatarBytes(bytesTotal);
+        }
+
+        function renderizarTabelaArquivos(arquivos) {
+            const tbody = document.getElementById('files-tbody');
+            const emptyState = document.getElementById('empty-state');
+            const table = document.getElementById('files-table');
+            const countLabel = document.getElementById('filter-count-label');
+
+            tbody.innerHTML = '';
+            countLabel.textContent = `Exibindo ${arquivos.length} documento${arquivos.length !== 1 ? 's' : ''}`;
+
+            if (arquivos.length === 0) {
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            table.style.display = 'table';
+            emptyState.style.display = 'none';
+
+            arquivos.forEach(arq => {
+                const tr = document.createElement('tr');
+                const paginasInfo = arq.paginas ? `${arq.paginas} páginas` : '<span style="color:#94a3b8;">-</span>';
+
+                tr.innerHTML = `
+                    <td>
+                        <div class="file-name-cell">
+                            <i class="fa-solid fa-file-pdf file-type-icon"></i>
+                            <div class="file-name-text" title="${arq.nome}">${arq.nome}</div>
+                        </div>
+                    </td>
+                    <td><span class="tag-badge">${arq.tipo || 'PDF'}</span></td>
+                    <td><strong>${arq.tamanho_formatado || formatarBytes(arq.tamanho_bytes)}</strong></td>
+                    <td>${paginasInfo}</td>
+                    <td><span style="color: var(--text-muted); font-size: 12px;">${arq.data_modificacao || '-'}</span></td>
+                    <td style="text-align: right;">
+                        <button class="btn-delete" onclick="abrirModalExclusao('${arq.nome.replace(/'/g, "\\'")}')" title="Apagar arquivo do servidor e da IA">
+                            <i class="fa-solid fa-trash-can"></i> Apagar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filtrarArquivos() {
+            const termo = document.getElementById('search-input').value.toLowerCase().trim();
+            if (!termo) {
+                renderizarTabelaArquivos(listaArquivosGlobal);
+                return;
+            }
+
+            const filtrados = listaArquivosGlobal.filter(arq => 
+                arq.nome.toLowerCase().includes(termo)
+            );
+            renderizarTabelaArquivos(filtrados);
+        }
+
+        // Modal de Exclusão
+        function abrirModalExclusao(nomeArquivo) {
+            arquivoParaExcluir = nomeArquivo;
+            document.getElementById('modal-filename-display').textContent = nomeArquivo;
+            document.getElementById('delete-modal').style.display = 'flex';
+        }
+
+        function fecharModalExclusao() {
+            arquivoParaExcluir = null;
+            document.getElementById('delete-modal').style.display = 'none';
+            const btn = document.getElementById('btn-confirm-delete');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-trash-can"></i> Sim, Apagar Arquivo';
+        }
+
+        async function executarExclusao() {
+            if (!arquivoParaExcluir) return;
+
             const token = getAuthToken();
             if (!token) {
-                alert("Acesso restrito: você deve estar autenticado como administrador para deletar arquivos.");
+                mostrarToast('Sessão expirada. Autentique-se novamente.', 'error');
                 realizarLogout();
                 return;
             }
 
-            const nomeArquivo = document.getElementById('toDelete').value.trim();
-            if (!nomeArquivo) {
-                alert("Digite o nome do arquivo para deletar.");
-                return;
-            }
-            const arquivo = {'nome_arquivo': nomeArquivo};
+            const btn = document.getElementById('btn-confirm-delete');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Apagando...';
 
             try {
                 const response = await fetch(`${API_URL}/rag/deletar`, {
@@ -580,56 +1739,167 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify(arquivo)
+                    body: JSON.stringify({ nome_arquivo: arquivoParaExcluir })
                 });
 
                 if (response.status === 401) {
-                    alert("Sua sessão expirou ou o token é inválido. Por favor, autentique-se novamente.");
+                    mostrarToast('Sessão expirada.', 'error');
                     realizarLogout();
                     return;
                 }
 
-                const resposta = await response.json();
-                alert("Resposta: " + (typeof resposta === 'object' ? JSON.stringify(resposta) : resposta));
-                document.getElementById('toDelete').value = '';
+                const data = await response.json();
+                fecharModalExclusao();
+
+                if (response.ok && (!data.status || data.status === 'sucesso' || typeof data === 'string')) {
+                    mostrarToast(`Arquivo "${arquivoParaExcluir}" foi excluído com sucesso!`, 'success');
+                    carregarListaArquivos();
+                } else {
+                    mostrarToast('Erro ao excluir: ' + (data.Erro || data.mensagem || 'Falha na exclusão'), 'error');
+                }
             } catch (error) {
-                alert("Erro ao deletar arquivo: " + error.message);
+                mostrarToast('Erro ao conectar ao servidor: ' + error.message, 'error');
+                fecharModalExclusao();
+            }
+        }
+
+        // ================= SIMULADOR DE CHAT =================
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                fazerPergunta();
+            }
+        }
+
+        function limparChatTela() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = `
+                <div class="chat-bubble bot">
+                    Tela limpa! Digite sua pergunta abaixo para simular uma conversa com o chatbot.
+                </div>
+            `;
+        }
+
+        async function fazerPergunta() {
+            const perguntaInput = document.getElementById('pergunta');
+            const perguntaTexto = perguntaInput.value.trim();
+            const telInput = document.getElementById('telefone').value.trim();
+
+            if (!perguntaTexto) return;
+            if (!telInput) {
+                mostrarToast('Informe um número de telefone para identificar a sessão de chat.', 'error');
+                document.getElementById('telefone').focus();
+                return;
+            }
+
+            const chatBox = document.getElementById('chat-box');
+
+            // Mensagem do usuário
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'chat-bubble user';
+            userMsgDiv.textContent = perguntaTexto;
+            chatBox.appendChild(userMsgDiv);
+
+            // Indicador de carregamento / digitando
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'chat-bubble loading';
+            loadingDiv.id = 'chat-loading-indicator';
+            loadingDiv.innerHTML = `
+                <span>Buscando informações no edital</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatBox.appendChild(loadingDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            perguntaInput.value = '';
+
+            try {
+                const headers = { 'Content-Type': 'application/json' };
+                const token = getAuthToken();
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const response = await fetch(`${API_URL}/chat/query`, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        pergunta: perguntaTexto,
+                        tel: telInput
+                    })
+                });
+
+                // Remove loading
+                loadingDiv.remove();
+
+                if (!response.ok) {
+                    throw new Error('Falha na resposta do servidor (HTTP ' + response.status + ')');
+                }
+
+                const data = await response.json();
+                const botMsgDiv = document.createElement('div');
+                botMsgDiv.className = 'chat-bubble bot';
+                botMsgDiv.textContent = data.resposta || 'Não foi possível obter uma resposta.';
+                chatBox.appendChild(botMsgDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+            } catch (error) {
+                loadingDiv.remove();
+                console.error("Erro ao fazer pergunta:", error);
+                const botMsgDiv = document.createElement('div');
+                botMsgDiv.className = 'chat-bubble bot';
+                botMsgDiv.style.color = 'var(--danger)';
+                botMsgDiv.textContent = 'Erro ao consultar o assistente: ' + error.message;
+                chatBox.appendChild(botMsgDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
             }
         }
 
         async function pegarHistorico() {
             const tel = document.getElementById('telefone').value.trim();
-            if (!tel || tel.length < 3) {
-                return;
-            }
+            if (!tel || tel.length < 3) return;
+
             try {
                 const headers = {};
                 const token = getAuthToken();
                 if (token) headers['Authorization'] = `Bearer ${token}`;
 
-                const response = await fetch(`${API_URL}/chat/historico/${tel}`, {
+                const response = await fetch(`${API_URL}/chat/historico/${encodeURIComponent(tel)}`, {
                     headers: headers
                 });
+
                 if (!response.ok) return;
 
-                const resposta = await response.json();
-                
+                const historico = await response.json();
                 const chatBox = document.getElementById('chat-box');
                 chatBox.innerHTML = '';
 
-                if (resposta.length === 0) {
-                    chatBox.innerHTML = `<div class="message bot">Nenhum histórico encontrado para este número.</div>`;
+                if (historico.length === 0) {
+                    chatBox.innerHTML = `
+                        <div class="chat-bubble bot">
+                            Nenhum histórico encontrado para o telefone <strong>${tel}</strong>. Envie uma nova pergunta abaixo para iniciar a conversa!
+                        </div>
+                    `;
                     return;
                 }
 
-                resposta.forEach(msg => {
-                    chatBox.innerHTML += `<div class="message user">${msg.question}</div>`;
-                    chatBox.innerHTML += `<div class="message bot">${msg.answer}</div>`;
+                historico.forEach(msg => {
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'chat-bubble user';
+                    userDiv.textContent = msg.question;
+                    chatBox.appendChild(userDiv);
+
+                    const botDiv = document.createElement('div');
+                    botDiv.className = 'chat-bubble bot';
+                    botDiv.textContent = msg.answer;
+                    chatBox.appendChild(botDiv);
                 });
+
                 chatBox.scrollTop = chatBox.scrollHeight;
-                
+
             } catch (error) {
-                console.error("Erro ao buscar histórico:", error);
+                console.error("Erro ao carregar histórico:", error);
             }
         }
 

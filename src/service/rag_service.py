@@ -1,4 +1,5 @@
 import os.path
+from datetime import datetime
 
 from qdrant_client.http.models import FilterSelector, Filter, FieldCondition, MatchValue
 import util.qdrant_server as QS
@@ -150,6 +151,60 @@ def delete(caminho : str, nome : str):
             }
         })
         return e
+
+
+def formatar_tamanho(tamanho_bytes: int) -> str:
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        if tamanho_bytes < 1024.0:
+            return f"{tamanho_bytes:.1f} {unit}" if unit != 'B' else f"{tamanho_bytes} B"
+        tamanho_bytes /= 1024.0
+    return f"{tamanho_bytes:.1f} TB"
+
+
+def listar_arquivos(diretorio: str = "uploaded"):
+    if not os.path.exists(diretorio):
+        os.makedirs(diretorio, exist_ok=True)
+        return []
+
+    arquivos = []
+    for nome in os.listdir(diretorio):
+        if nome.startswith('.'):
+            continue
+        caminho = os.path.join(diretorio, nome)
+        if not os.path.isfile(caminho):
+            continue
+
+        try:
+            stat = os.stat(caminho)
+            tamanho = stat.st_size
+            data_mod = datetime.fromtimestamp(stat.st_mtime)
+
+            paginas = None
+            if nome.lower().endswith('.pdf'):
+                try:
+                    with open(caminho, 'rb') as f:
+                        reader = PdfReader(f)
+                        paginas = len(reader.pages)
+                except Exception:
+                    paginas = None
+
+            arquivos.append({
+                "nome": nome,
+                "tamanho_bytes": tamanho,
+                "tamanho_formatado": formatar_tamanho(tamanho),
+                "data_modificacao": data_mod.strftime("%d/%m/%Y %H:%M:%S"),
+                "data_iso": data_mod.isoformat(),
+                "paginas": paginas,
+                "tipo": nome.split('.')[-1].upper() if '.' in nome else "ARQUIVO"
+            })
+        except Exception as e:
+            print(f"Erro ao obter informacoes do arquivo {nome}: {e}")
+
+    arquivos.sort(key=lambda x: x["data_iso"], reverse=True)
+    return arquivos
+
+
 # Só pra testes
 if __name__ == '__main__':
-  delete('../../uploaded/EDITAL-No-12-2026-EDITAL-DO-PROCESSO-SELETIVO-DE-VAGAS-NAO-PREENCHIDAS-2026-2.pdf', 'EDITAL-No-12-2026-EDITAL-DO-PROCESSO-SELETIVO-DE-VAGAS-NAO-PREENCHIDAS-2026-2.pdf')
+    delete('../../uploaded/EDITAL-No-12-2026-EDITAL-DO-PROCESSO-SELETIVO-DE-VAGAS-NAO-PREENCHIDAS-2026-2.pdf', 'EDITAL-No-12-2026-EDITAL-DO-PROCESSO-SELETIVO-DE-VAGAS-NAO-PREENCHIDAS-2026-2.pdf')
+
