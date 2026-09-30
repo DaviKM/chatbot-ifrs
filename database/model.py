@@ -1,7 +1,7 @@
 from database.db import Base
 from sqlalchemy import String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Mensagem(Base):
     __tablename__ = 'mensagem'
@@ -10,7 +10,7 @@ class Mensagem(Base):
     tel_n : Mapped[str] = mapped_column(String(11), nullable=False)
     question : Mapped[str] = mapped_column(String(1000), nullable=False)
     answer : Mapped[str] = mapped_column(String(10000), nullable=False)
-    date : Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now())
+    date : Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
 class Usuario(Base):
     __tablename__ = 'usuario'

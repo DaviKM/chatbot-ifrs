@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Chatbot IFRS - Ambiente de Testes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css" integrity="sha512-x9WwyMYBnlXMNQ6kQ/Lyzu1NqIhLQKL5Oq6xByfXuRj7s9CskyCbLv/1IjqzJmXwFXWr0ov6jBV7Qbc0hh9nHg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         * {
             box-sizing: border-box;
@@ -286,7 +287,7 @@
     <!-- Card de Autenticação JWT do Administrador -->
     <div id="login-container" class="login-card">
         <div class="login-header">
-            <h2>🔐 Chatbot IFRS</h2>
+            <h2><i class="fa-solid fa-comment"></i> Chatbot IFRS</h2>
             <p>Acesso restrito ao ambiente de testes e envio de arquivos. Autentique-se com o usuário administrador genérico.</p>
         </div>
         <div id="login-error" class="login-error"></div>
@@ -317,7 +318,7 @@
                     <button type="button" class="btn-search" onclick="pegarHistorico()">Buscar</button>
                 </div>
                 <div class="user-session">
-                    <span id="user-display">👤 admin</span>
+                    <i class="fa-solid fa-user"></i><span id="user-display">admin</span>
                     <button type="button" class="btn-logout" onclick="realizarLogout()">Sair</button>
                 </div>
             </div>
@@ -378,7 +379,7 @@
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('app-container').style.display = 'flex';
             if (username) {
-                document.getElementById('user-display').textContent = `👤 ${username}`;
+                document.getElementById('user-display').textContent = `${username}`;
             }
         }
 
